@@ -6,7 +6,7 @@
     <title>Verve Juice Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* นำเข้าฟอนต์ Kanit จาก Google Fonts */
+        /* Import Kanit and Inter fonts from Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@400;700&display=swap');
         
         body {
@@ -14,7 +14,7 @@
             background-color: #f7f3e9;
         }
         
-        /* สไตล์สำหรับชื่อร้านและหัวข้อเมนู */
+        /* Styles for store name and menu headers */
         .cute-font {
             font-family: 'Kanit', sans-serif;
         }
@@ -35,6 +35,7 @@
         .btn-plus-minus {
             @apply w-8 h-8 flex items-center justify-center rounded-full text-white text-lg font-bold;
         }
+        /* Hide increment/decrement buttons in input[type="number"] */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -43,6 +44,7 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+        /* Style for loading spinner */
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid #fff;
@@ -61,7 +63,7 @@
 
     <div class="container bg-white p-6 rounded-3xl shadow-xl w-full max-w-lg transition-all duration-300">
 
-        <!-- Order Form Section -->
+        <!-- Order form section -->
         <div id="order-form-section">
             <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">Verve Juice</h1>
 
@@ -99,11 +101,11 @@
             </button>
         </div>
 
-        <!-- Payment Section -->
+        <!-- Payment section -->
         <div id="payment-section" class="hidden">
             <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">ชำระเงิน</h1>
 
-            <!-- Back Button -->
+            <!-- Back button -->
             <button id="back-to-menu-btn" class="mb-4 px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-colors">
                 ย้อนกลับ
             </button>
@@ -122,7 +124,7 @@
                 <div class="bg-gray-50 p-4 rounded-2xl flex flex-col items-center">
                     <p class="font-bold mb-2">โอนผ่าน QR Code</p>
                     
-                    <!-- QR code display area, now using a fixed URL -->
+                    <!-- QR code display section -->
                     <div id="qr-display-container" class="w-48 h-48 border border-gray-200 rounded-xl flex items-center justify-center bg-gray-100">
                         <img id="qrCodeImage" src="https://github.com/kornkawes/Image/blob/main/unnamed%20(1).jpg?raw=true" alt="QR Code" class="w-full h-full object-contain rounded-xl" onerror="this.onerror=null; this.src='https://placehold.co/400x400/eeeeee/333333?text=QR+Code'; showMessageBox('ไม่สามารถโหลดรูปภาพจาก URL ที่ระบุได้', 'red');">
                     </div>
@@ -149,7 +151,7 @@
                 <input type="file" id="slipUpload" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-300">
             </div>
 
-            <!-- Slip Preview Section -->
+            <!-- Slip preview section -->
             <div id="slip-preview-container" class="hidden mt-4 p-4 border rounded-xl bg-gray-50 flex flex-col items-center">
                 <p class="text-sm text-gray-600 mb-2">รูปสลิปที่เลือก:</p>
                 <img id="slip-preview" src="#" alt="Slip Preview" class="max-w-xs max-h-40 rounded-lg object-contain border border-gray-300" />
@@ -161,7 +163,7 @@
             </button>
         </div>
 
-        <!-- Confirmation Section -->
+        <!-- Confirmation page section -->
         <div id="confirmation-section" class="hidden text-center">
             <svg class="mx-auto h-16 w-16 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <h1 class="text-3xl font-bold text-center mt-4 text-pink-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
@@ -174,7 +176,6 @@
     </div>
 
     <script>
-        // Global function to show a message box, moved to the global scope to be accessible by `onerror`
         window.showMessageBox = (message, color) => {
             const messageBox = document.createElement('div');
             messageBox.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-${color}-500 text-white px-6 py-4 rounded-xl shadow-lg z-50 transition-all duration-300`;
@@ -195,9 +196,8 @@
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://placehold.co/80x80/fed7aa/111827?text=Recharge%20Me' }
             ];
 
-            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Google Sheet และ Telegram โดยเฉพาะ ⚠️
-            const n8nWebhookUrlGoogleSheet = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_GOOGLE_SHEET
-            const n8nWebhookUrlTelegram = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_TELEGRAM
+            // ⚠️ Please replace the URL below with the n8n webhook you created ⚠️
+            const n8nWebhookUrl = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_SINGLE_N8N_WEBHOOK_URL
 
             const menuItemsEl = document.getElementById('menu-items');
             const totalPriceEl = document.getElementById('total-price');
@@ -221,18 +221,7 @@
             const uploadSlipTextEl = document.getElementById('upload-slip-text');
             const uploadSlipSpinnerEl = document.getElementById('upload-slip-spinner');
             
-            const qrCodeImage = document.getElementById('qrCodeImage');
-
-            let order = { items: {}, total: 0 };
-            
-            // Function to show a temporary message box
-            const showMessageBox = (message, color) => {
-                const messageBox = document.createElement('div');
-                messageBox.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-${color}-500 text-white px-6 py-4 rounded-xl shadow-lg z-50 transition-all duration-300`;
-                messageBox.textContent = message;
-                document.body.appendChild(messageBox);
-                setTimeout(() => { messageBox.remove(); }, 3000);
-            };
+            let order = JSON.parse(localStorage.getItem('currentOrder')) || { items: {}, total: 0 };
             
             window.toggleAllergyInput = (checkbox) => {
                 const itemId = checkbox.dataset.id;
@@ -247,6 +236,7 @@
                         order.items[itemId].allergyNote = '';
                     }
                 }
+                localStorage.setItem('currentOrder', JSON.stringify(order));
             };
 
             window.updateAllergyNote = (input) => {
@@ -254,6 +244,7 @@
                 if (order.items[itemId]) {
                     order.items[itemId].allergyNote = input.value;
                 }
+                localStorage.setItem('currentOrder', JSON.stringify(order));
             };
 
             const updateTotal = () => {
@@ -266,6 +257,7 @@
                 }
                 order.total = total;
                 totalPriceEl.textContent = `฿${total}`;
+                localStorage.setItem('currentOrder', JSON.stringify(order));
             };
             
             const renderMenu = () => {
@@ -273,7 +265,7 @@
                 menu.forEach(item => {
                     const quantity = order.items[item.id] ? order.items[item.id].quantity : 0;
                     const allergyNote = order.items[item.id] ? order.items[item.id].allergyNote : '';
-                    const hasAllergy = allergyNote !== '';
+                    const hasAllergy = !!allergyNote;
 
                     const itemHtml = `
                         <div class="p-4 bg-gray-50 rounded-xl card flex items-center space-x-4">
@@ -292,10 +284,10 @@
                                         <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-lime-400 hover:bg-lime-500 transition-colors rounded-full">+</button>
                                     </div>
                                 </div>
-
+                                
                                 <div class="mt-2 text-sm text-gray-700">
                                     <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" class="form-checkbox h-4 w-4 text-lime-600 rounded" data-id="${item.id}" onchange="toggleAllergyInput(this)">
+                                        <input type="checkbox" class="form-checkbox h-4 w-4 text-lime-600 rounded" data-id="${item.id}" onchange="toggleAllergyInput(this)" ${hasAllergy ? 'checked' : ''}>
                                         <span>แจ้งส่วนผสมที่แพ้ (ถ้ามี)</span>
                                     </label>
                                     <div id="allergy-input-${item.id}" class="mt-2 ${hasAllergy ? '' : 'hidden'}">
@@ -310,6 +302,7 @@
                     `;
                     menuItemsEl.insertAdjacentHTML('beforeend', itemHtml);
                 });
+                updateTotal();
             };
 
             menuItemsEl.addEventListener('click', (e) => {
@@ -320,7 +313,8 @@
                 const action = button.dataset.action;
                 
                 if (!order.items[itemId]) {
-                    order.items[itemId] = { ...menu.find(item => item.id === itemId), quantity: 0, allergyNote: '' };
+                    const item = menu.find(i => i.id === itemId);
+                    order.items[itemId] = { id: item.id, name: item.name, price: item.price, unit: item.unit, quantity: 0, allergyNote: '' };
                 }
 
                 if (action === 'plus') {
@@ -329,7 +323,7 @@
                     order.items[itemId].quantity--;
                 }
 
-                if (order.items[itemId].quantity === 0) {
+                if (order.items[itemId]?.quantity === 0) {
                     delete order.items[itemId];
                 }
 
@@ -341,7 +335,7 @@
                 updateTotal();
             });
 
-            confirmOrderBtn.addEventListener('click', async () => {
+            confirmOrderBtn.addEventListener('click', () => {
                 const customerName = customerNameEl.value.trim();
                 const customerPhone = customerPhoneEl.value.trim();
                 const contactApp = contactAppEl.value.trim();
@@ -354,16 +348,17 @@
                     return;
                 }
 
-                if (Object.keys(order.items).length === 0) {
+                const orderedItems = Object.values(order.items).filter(item => item.quantity > 0);
+                if (orderedItems.length === 0) {
                     showMessageBox('กรุณาเลือกเมนูอย่างน้อย 1 รายการ', 'red');
                     return;
                 }
-
+                
                 if (!customerName) {
                     showMessageBox('กรุณากรอกชื่อให้ครบถ้วน', 'red');
                     return;
                 }
-
+                
                 const finalOrder = {
                     customerName: customerName,
                     customerContact: {
@@ -371,21 +366,20 @@
                         other: contactApp && contactId ? `${contactApp}: ${contactId}` : ''
                     },
                     customerNote: customerNote,
-                    items: Object.values(order.items).filter(item => item.quantity > 0),
+                    items: orderedItems,
                     total: order.total
                 };
-
-                // ➡️ ไม่มีการส่งข้อมูลไป n8n ในขั้นตอนนี้, เพียงบันทึกข้อมูลไว้ใน localStorage
-                localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
                 
+                localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
+
                 renderPaymentPage(finalOrder);
                 orderFormSection.classList.add('hidden');
                 paymentSection.classList.remove('hidden');
             });
 
             backToMenuBtn.addEventListener('click', () => {
-                paymentSection.classList.add('hidden');
-                orderFormSection.classList.remove('hidden');
+                localStorage.removeItem('currentOrder');
+                window.location.reload(); 
             });
             
             const renderPaymentPage = (finalOrder) => {
@@ -408,6 +402,23 @@
                 paymentTotalEl.textContent = `฿${finalOrder.total}`;
             };
             
+            const savedOrder = JSON.parse(localStorage.getItem('currentOrder'));
+            if (savedOrder) {
+                renderPaymentPage(savedOrder);
+                orderFormSection.classList.add('hidden');
+                paymentSection.classList.remove('hidden');
+                customerNameEl.value = savedOrder.customerName || '';
+                customerPhoneEl.value = savedOrder.customerContact.phone || '';
+                if (savedOrder.customerContact.other) {
+                    const [app, id] = savedOrder.customerContact.other.split(': ');
+                    contactAppEl.value = app;
+                    contactIdEl.value = id;
+                }
+                customerNoteEl.value = savedOrder.customerNote || '';
+            } else {
+                renderMenu();
+            }
+
             slipUploadEl.addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 if (file) {
@@ -418,116 +429,13 @@
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    slipPreviewContainerEl.classList.add('hidden');
                     slipPreviewEl.src = '#';
+                    slipPreviewContainerEl.classList.add('hidden');
                 }
-            });
-
-            uploadSlipBtn.addEventListener('click', async () => {
-                const slipFile = slipUploadEl.files[0];
-                if (!slipFile) {
-                    showMessageBox('กรุณาอัปโหลดสลิปการโอนเงิน', 'red');
-                    return;
-                }
-
-                uploadSlipBtn.disabled = true;
-                uploadSlipTextEl.classList.add('hidden');
-                uploadSlipSpinnerEl.classList.remove('hidden');
-
-                const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
-                const orderTime = new Date().toISOString();
-
-                // 💡 ตรงนี้คือส่วนสำคัญที่ขาดหายไป: คุณต้องเขียนโค้ดสำหรับอัปโหลดไฟล์สลิป
-                //    เช่น อัปโหลดไปยัง Cloud Storage (อย่าง Google Cloud Storage หรือ Firebase Storage)
-                //    เพื่อที่จะได้ URL ของรูปภาพจริง ๆ มาใช้
-                //    ในโค้ดตัวอย่างนี้ เราจะใช้ URL ที่เป็นรูปภาพปลอม เพื่อให้ n8n สามารถทำงานได้ แต่ในความเป็นจริงแล้ว
-                //    มันจะไม่ใช่สลิปที่ลูกค้าอัปโหลดมา
-                //
-                //    หากคุณมีระบบหลังบ้านหรือ Cloud Storage แล้ว ให้ใช้โค้ดดังนี้:
-                //    const paymentSlipUrl = await uploadFile(slipFile);
-                const paymentSlipUrl = 'https://placehold.co/400x400/eeeeee/333333?text=Slip+Placeholder';
-
-                // ✅ จัดเตรียมข้อมูลสำหรับ Google Sheet
-                const sheetPayload = {
-                    customerName: currentOrder.customerName,
-                    customerContact: currentOrder.customerContact.phone,
-                    items: currentOrder.items.map(item => {
-                        let itemString = `${item.name} x ${item.quantity}`;
-                        if (item.allergyNote) {
-                            itemString += ` (หมายเหตุแพ้: ${item.allergyNote})`;
-                        }
-                        return itemString;
-                    }).join(', '),
-                    orderTime: orderTime,
-                    paymentTotal: currentOrder.total,
-                    paymentSlipUrl: paymentSlipUrl
-                };
-
-                // ✅ จัดเตรียมข้อมูลสำหรับ Telegram (ข้อความที่อ่านง่าย)
-                let telegramMessage = `🍹 *Verve Juice ออเดอร์ใหม่!* 🍹\n\n`;
-                telegramMessage += `*ชื่อลูกค้า:* ${currentOrder.customerName}\n`;
-                telegramMessage += `*ข้อมูลติดต่อ:* ${currentOrder.customerContact.phone}`;
-                if (currentOrder.customerContact.other) {
-                    telegramMessage += ` (${currentOrder.customerContact.other})`;
-                }
-                telegramMessage += `\n*รายการที่สั่ง:*\n`;
-                currentOrder.items.forEach(item => {
-                    telegramMessage += `- ${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})\n`;
-                    if (item.allergyNote) {
-                        telegramMessage += `  (หมายเหตุ: ${item.allergyNote})\n`;
-                    }
-                });
-                if (currentOrder.customerNote) {
-                    telegramMessage += `\n*หมายเหตุ:* ${currentOrder.customerNote}\n`;
-                }
-                telegramMessage += `\n*ยอดรวม:* ฿${currentOrder.total}\n`;
-                telegramMessage += `\n*สลิปการโอนเงิน:* ${paymentSlipUrl}`;
-
-                // 🚀 ส่งข้อมูลไปที่ n8n webhook ทั้งสองตัว
-                try {
-                    // ส่งไป Google Sheet
-                    if (n8nWebhookUrlGoogleSheet) {
-                        const responseSheet = await fetch(n8nWebhookUrlGoogleSheet, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(sheetPayload)
-                        });
-                        if (!responseSheet.ok) {
-                            console.error(`Error sending data to n8n (Google Sheet): HTTP status ${responseSheet.status}`);
-                        }
-                    } else {
-                        console.warn('n8nWebhookUrlGoogleSheet ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                    }
-                    
-                    // ส่งไป Telegram
-                    if (n8nWebhookUrlTelegram) {
-                        const responseTelegram = await fetch(n8nWebhookUrlTelegram, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ text: telegramMessage })
-                        });
-                        if (!responseTelegram.ok) {
-                            console.error(`Error sending data to n8n (Telegram): HTTP status ${responseTelegram.status}`);
-                        }
-                    } else {
-                        console.warn('n8nWebhookUrlTelegram ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                    }
-                } catch (error) {
-                    console.error('Error sending data to n8n:', error);
-                } finally {
-                    uploadSlipBtn.disabled = false;
-                    uploadSlipTextEl.classList.remove('hidden');
-                    uploadSlipSpinnerEl.classList.add('hidden');
-                }
-
-                // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
-                paymentSection.classList.add('hidden');
-                confirmationSection.classList.remove('hidden');
             });
 
             copyAccountBtn.addEventListener('click', () => {
                 const accountNumberText = document.getElementById('bank-account-number').textContent.split(': ')[1];
-
                 const tempInput = document.createElement('input');
                 tempInput.value = accountNumberText;
                 document.body.appendChild(tempInput);
@@ -537,16 +445,98 @@
                     showMessageBox('คัดลอกเลขบัญชีแล้ว!', 'green');
                 } catch (err) {
                     console.error('Failed to copy text: ', err);
+                    showMessageBox('ไม่สามารถคัดลอกได้ กรุณาทำด้วยตนเอง', 'yellow');
                 }
                 document.body.removeChild(tempInput);
             });
 
-            renderMenu();
+            uploadSlipBtn.addEventListener('click', async () => {
+                const slipFile = slipUploadEl.files[0];
+                if (!slipFile) {
+                    showMessageBox('กรุณาเลือกไฟล์สลิปก่อนแจ้งโอน', 'red');
+                    return;
+                }
+
+                uploadSlipBtn.disabled = true;
+                uploadSlipTextEl.classList.add('hidden');
+                uploadSlipSpinnerEl.classList.remove('hidden');
+
+                try {
+                    const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
+                    if (!currentOrder) {
+                        throw new Error("No order found in localStorage.");
+                    }
+                    
+                    const orderTime = new Date().toLocaleString();
+                    
+                    // Convert slip image to Base64 string
+                    const base64Slip = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result.split(',')[1]); // Get only the Base64 part
+                        reader.onerror = error => reject(error);
+                        reader.readAsDataURL(slipFile);
+                    });
+                    
+                    // 2. Payload for Telegram (Markdown text)
+                    let telegramMessage = `🍹 *Verve Juice ออเดอร์ใหม่!* 🍹\n\n`;
+                    telegramMessage += `*ชื่อลูกค้า:* ${currentOrder.customerName}\n`;
+                    telegramMessage += `*เบอร์โทรศัพท์:* ${currentOrder.customerContact.phone}\n`;
+                    if (currentOrder.customerContact.other) {
+                        telegramMessage += `*ช่องทางอื่น:* ${currentOrder.customerContact.other}\n`;
+                    }
+                    telegramMessage += `*รายการที่สั่ง:*\n`;
+                    currentOrder.items.forEach(item => {
+                        telegramMessage += `- ${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})\n`;
+                        if (item.allergyNote) {
+                            telegramMessage += `  (หมายเหตุ: แพ้ ${item.allergyNote})\n`;
+                        }
+                    });
+                    if (currentOrder.customerNote) {
+                        telegramMessage += `\n*หมายเหตุ:* ${currentOrder.customerNote}\n`;
+                    }
+                    telegramMessage += `\n*ยอดรวม:* ฿${currentOrder.total}\n`;
+                    
+                    // The single payload to be sent to n8n
+                    const combinedPayload = {
+                        customerName: currentOrder.customerName,
+                        customerContact: currentOrder.customerContact.phone,
+                        customerOtherContact: currentOrder.customerContact.other,
+                        customerNote: currentOrder.customerNote,
+                        items: currentOrder.items.map(item => {
+                            let itemString = `${item.name} x ${item.quantity}`;
+                            if (item.allergyNote) {
+                                itemString += ` (แพ้: ${item.allergyNote})`;
+                            }
+                            return itemString;
+                        }).join(', '),
+                        orderTime: orderTime,
+                        paymentTotal: currentOrder.total,
+                        paymentStatus: 'Paid',
+                        slipImageBase64: base64Slip,
+                        telegramText: telegramMessage // Add the formatted Telegram message to the payload
+                    };
+                    
+                    // Send combined payload to the single n8n webhook
+                    await fetch(n8nWebhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(combinedPayload)
+                    });
+                    
+                    showMessageBox('แจ้งโอนเงินเรียบร้อยแล้ว!', 'green');
+                    paymentSection.classList.add('hidden');
+                    confirmationSection.classList.remove('hidden');
+                    localStorage.removeItem('currentOrder');
+                } catch (error) {
+                    console.error('Error sending data to n8n:', error);
+                    showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองอีกครั้ง', 'red');
+                } finally {
+                    uploadSlipBtn.disabled = false;
+                    uploadSlipTextEl.classList.remove('hidden');
+                    uploadSlipSpinnerEl.classList.add('hidden');
+                }
+            });
         });
     </script>
 </body>
 </html>
-
-
-
-
