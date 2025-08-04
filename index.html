@@ -195,9 +195,8 @@
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://placehold.co/80x80/fed7aa/111827?text=Recharge%20Me' }
             ];
 
-            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Google Sheet และ Telegram โดยเฉพาะ ⚠️
-            const n8nWebhookUrlGoogleSheet = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_GOOGLE_SHEET
-            const n8nWebhookUrlTelegram = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_TELEGRAM
+            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Workflow ใหม่ที่รวม Google Sheet และ Telegram ⚠️
+            const n8nWebhookUrl = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
             const menuItemsEl = document.getElementById('menu-items');
             const totalPriceEl = document.getElementById('total-price');
@@ -374,8 +373,7 @@
                     items: Object.values(order.items).filter(item => item.quantity > 0),
                     total: order.total
                 };
-
-                // ➡️ ไม่มีการส่งข้อมูลไป n8n ในขั้นตอนนี้, เพียงบันทึกข้อมูลไว้ใน localStorage
+                
                 localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
                 
                 renderPaymentPage(finalOrder);
@@ -437,92 +435,59 @@
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
                 const orderTime = new Date().toISOString();
 
-                // 💡 ตรงนี้คือส่วนสำคัญที่ขาดหายไป: คุณต้องเขียนโค้ดสำหรับอัปโหลดไฟล์สลิป
-                //    เช่น อัปโหลดไปยัง Cloud Storage (อย่าง Google Cloud Storage หรือ Firebase Storage)
-                //    เพื่อที่จะได้ URL ของรูปภาพจริง ๆ มาใช้
-                //    ในโค้ดตัวอย่างนี้ เราจะใช้ URL ที่เป็นรูปภาพปลอม เพื่อให้ n8n สามารถทำงานได้ แต่ในความเป็นจริงแล้ว
-                //    มันจะไม่ใช่สลิปที่ลูกค้าอัปโหลดมา
-                //
-                //    หากคุณมีระบบหลังบ้านหรือ Cloud Storage แล้ว ให้ใช้โค้ดดังนี้:
-                //    const paymentSlipUrl = await uploadFile(slipFile);
-                const paymentSlipUrl = 'https://placehold.co/400x400/eeeeee/333333?text=Slip+Placeholder';
+                // 💡 แปลงไฟล์ภาพให้เป็น Base64 String เพื่อส่งไปยัง n8n
+                const reader = new FileReader();
+                reader.readAsDataURL(slipFile);
+                reader.onloadend = async () => {
+                    const base64Slip = reader.result;
 
-                // ✅ จัดเตรียมข้อมูลสำหรับ Google Sheet
-                const sheetPayload = {
-                    customerName: currentOrder.customerName,
-                    customerContact: currentOrder.customerContact.phone,
-                    items: currentOrder.items.map(item => {
-                        let itemString = `${item.name} x ${item.quantity}`;
-                        if (item.allergyNote) {
-                            itemString += ` (หมายเหตุแพ้: ${item.allergyNote})`;
+                    // ✅ จัดเตรียม Payload สำหรับ n8n
+                    const payload = {
+                        customerName: currentOrder.customerName,
+                        customerContact: currentOrder.customerContact,
+                        customerNote: currentOrder.customerNote,
+                        items: currentOrder.items,
+                        total: currentOrder.total,
+                        orderTime: orderTime,
+                        paymentSlipUrl: base64Slip // ส่ง Base64 String ของรูปสลิป
+                    };
+    
+                    // 🚀 ส่งข้อมูลไปที่ n8n webhook
+                    try {
+                        if (n8nWebhookUrl) {
+                            const response = await fetch(n8nWebhookUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            if (!response.ok) {
+                                console.error(`Error sending data to n8n: HTTP status ${response.status}`);
+                                showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล!', 'red');
+                            }
+                        } else {
+                            console.warn('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
                         }
-                        return itemString;
-                    }).join(', '),
-                    orderTime: orderTime,
-                    paymentTotal: currentOrder.total,
-                    paymentSlipUrl: paymentSlipUrl
+                    } catch (error) {
+                        console.error('Error sending data to n8n:', error);
+                        showMessageBox('เกิดข้อผิดพลาดในการเชื่อมต่อ!', 'red');
+                    } finally {
+                        uploadSlipBtn.disabled = false;
+                        uploadSlipTextEl.classList.remove('hidden');
+                        uploadSlipSpinnerEl.classList.add('hidden');
+                    }
+    
+                    // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
+                    paymentSection.classList.add('hidden');
+                    confirmationSection.classList.remove('hidden');
                 };
 
-                // ✅ จัดเตรียมข้อมูลสำหรับ Telegram (ข้อความที่อ่านง่าย)
-                let telegramMessage = `🍹 *Verve Juice ออเดอร์ใหม่!* 🍹\n\n`;
-                telegramMessage += `*ชื่อลูกค้า:* ${currentOrder.customerName}\n`;
-                telegramMessage += `*ข้อมูลติดต่อ:* ${currentOrder.customerContact.phone}`;
-                if (currentOrder.customerContact.other) {
-                    telegramMessage += ` (${currentOrder.customerContact.other})`;
-                }
-                telegramMessage += `\n*รายการที่สั่ง:*\n`;
-                currentOrder.items.forEach(item => {
-                    telegramMessage += `- ${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})\n`;
-                    if (item.allergyNote) {
-                        telegramMessage += `  (หมายเหตุ: ${item.allergyNote})\n`;
-                    }
-                });
-                if (currentOrder.customerNote) {
-                    telegramMessage += `\n*หมายเหตุ:* ${currentOrder.customerNote}\n`;
-                }
-                telegramMessage += `\n*ยอดรวม:* ฿${currentOrder.total}\n`;
-                telegramMessage += `\n*สลิปการโอนเงิน:* ${paymentSlipUrl}`;
-
-                // 🚀 ส่งข้อมูลไปที่ n8n webhook ทั้งสองตัว
-                try {
-                    // ส่งไป Google Sheet
-                    if (n8nWebhookUrlGoogleSheet) {
-                        const responseSheet = await fetch(n8nWebhookUrlGoogleSheet, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(sheetPayload)
-                        });
-                        if (!responseSheet.ok) {
-                            console.error(`Error sending data to n8n (Google Sheet): HTTP status ${responseSheet.status}`);
-                        }
-                    } else {
-                        console.warn('n8nWebhookUrlGoogleSheet ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                    }
-                    
-                    // ส่งไป Telegram
-                    if (n8nWebhookUrlTelegram) {
-                        const responseTelegram = await fetch(n8nWebhookUrlTelegram, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ text: telegramMessage })
-                        });
-                        if (!responseTelegram.ok) {
-                            console.error(`Error sending data to n8n (Telegram): HTTP status ${responseTelegram.status}`);
-                        }
-                    } else {
-                        console.warn('n8nWebhookUrlTelegram ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                    }
-                } catch (error) {
-                    console.error('Error sending data to n8n:', error);
-                } finally {
+                reader.onerror = (error) => {
+                    console.error('Error reading file:', error);
+                    showMessageBox('ไม่สามารถอ่านไฟล์สลิปได้', 'red');
                     uploadSlipBtn.disabled = false;
                     uploadSlipTextEl.classList.remove('hidden');
                     uploadSlipSpinnerEl.classList.add('hidden');
-                }
-
-                // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
-                paymentSection.classList.add('hidden');
-                confirmationSection.classList.remove('hidden');
+                };
             });
 
             copyAccountBtn.addEventListener('click', () => {
@@ -546,4 +511,3 @@
     </script>
 </body>
 </html>
-
