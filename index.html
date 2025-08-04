@@ -43,6 +43,18 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-green-50 flex items-center justify-center min-h-screen p-4">
@@ -143,8 +155,9 @@
                 <img id="slip-preview" src="#" alt="Slip Preview" class="max-w-xs max-h-40 rounded-lg object-contain border border-gray-300" />
             </div>
 
-            <button id="upload-slip-btn" class="w-full mt-6 bg-lime-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-lime-500 transition-colors">
-                แจ้งโอนเงิน
+            <button id="upload-slip-btn" class="w-full mt-6 bg-lime-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-lime-500 transition-colors flex items-center justify-center">
+                <span id="upload-slip-text">แจ้งโอนเงิน</span>
+                <div id="upload-slip-spinner" class="spinner hidden ml-2"></div>
             </button>
         </div>
 
@@ -205,6 +218,8 @@
             const slipPreviewEl = document.getElementById('slip-preview');
             const uploadSlipBtn = document.getElementById('upload-slip-btn');
             const backToMenuBtn = document.getElementById('back-to-menu-btn');
+            const uploadSlipTextEl = document.getElementById('upload-slip-text');
+            const uploadSlipSpinnerEl = document.getElementById('upload-slip-spinner');
             
             const qrCodeImage = document.getElementById('qrCodeImage');
 
@@ -415,16 +430,34 @@
                     return;
                 }
 
+                uploadSlipBtn.disabled = true;
+                uploadSlipTextEl.classList.add('hidden');
+                uploadSlipSpinnerEl.classList.remove('hidden');
+
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
                 const orderTime = new Date().toISOString();
-                // 💡 สำหรับการใช้งานจริง คุณอาจต้องอัปโหลดรูปสลิปไปยัง Cloud Storage เพื่อรับ URL
-                const paymentSlipUrl = `https://your-storage.com/slips/${slipFile.name}`;
+
+                // 💡 ตรงนี้คือส่วนสำคัญที่ขาดหายไป: คุณต้องเขียนโค้ดสำหรับอัปโหลดไฟล์สลิป
+                //    เช่น อัปโหลดไปยัง Cloud Storage (อย่าง Google Cloud Storage หรือ Firebase Storage)
+                //    เพื่อที่จะได้ URL ของรูปภาพจริง ๆ มาใช้
+                //    ในโค้ดตัวอย่างนี้ เราจะใช้ URL ที่เป็นรูปภาพปลอม เพื่อให้ n8n สามารถทำงานได้ แต่ในความเป็นจริงแล้ว
+                //    มันจะไม่ใช่สลิปที่ลูกค้าอัปโหลดมา
+                //
+                //    หากคุณมีระบบหลังบ้านหรือ Cloud Storage แล้ว ให้ใช้โค้ดดังนี้:
+                //    const paymentSlipUrl = await uploadFile(slipFile);
+                const paymentSlipUrl = 'https://placehold.co/400x400/eeeeee/333333?text=Slip+Placeholder';
 
                 // ✅ จัดเตรียมข้อมูลสำหรับ Google Sheet
                 const sheetPayload = {
                     customerName: currentOrder.customerName,
                     customerContact: currentOrder.customerContact.phone,
-                    items: currentOrder.items.map(item => `${item.name} x ${item.quantity}`).join(', '),
+                    items: currentOrder.items.map(item => {
+                        let itemString = `${item.name} x ${item.quantity}`;
+                        if (item.allergyNote) {
+                            itemString += ` (หมายเหตุแพ้: ${item.allergyNote})`;
+                        }
+                        return itemString;
+                    }).join(', '),
                     orderTime: orderTime,
                     paymentTotal: currentOrder.total,
                     paymentSlipUrl: paymentSlipUrl
@@ -479,9 +512,12 @@
                     } else {
                         console.warn('n8nWebhookUrlTelegram ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
                     }
-
                 } catch (error) {
                     console.error('Error sending data to n8n:', error);
+                } finally {
+                    uploadSlipBtn.disabled = false;
+                    uploadSlipTextEl.classList.remove('hidden');
+                    uploadSlipSpinnerEl.classList.add('hidden');
                 }
 
                 // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
@@ -510,5 +546,6 @@
     </script>
 </body>
 </html>
+
 
 
