@@ -6,11 +6,19 @@
     <title>Verve Juice Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        /* นำเข้าฟอนต์ Kanit จาก Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@400;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f7f3e9;
         }
+        
+        /* สไตล์สำหรับชื่อร้านและหัวข้อเมนู */
+        .cute-font {
+            font-family: 'Kanit', sans-serif;
+        }
+        
         .container {
             max-width: 90%;
             margin-top: 1rem;
@@ -35,6 +43,18 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-green-50 flex items-center justify-center min-h-screen p-4">
@@ -43,7 +63,7 @@
 
         <!-- Order Form Section -->
         <div id="order-form-section">
-            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient">Verve Juice</h1>
+            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">Verve Juice</h1>
 
             <div class="mb-4">
                 <label for="customerName" class="block text-gray-700 font-bold mb-2">ชื่อของคุณ</label>
@@ -52,10 +72,10 @@
 
             <div class="mb-4">
                 <label for="customerPhone" class="block text-gray-700 font-bold mb-2">ช่องทางการติดต่อ</label>
-                <input type="tel" id="customerPhone" placeholder="เบอร์โทรศัพท์" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 mb-2">
+                <input type="tel" id="customerPhone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 mb-2">
                 <div class="flex space-x-2">
                     <input type="text" id="contactApp" placeholder="ชื่อแอป เช่น Line" class="w-1/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <input type="text" id="contactId" placeholder="ไอดี" class="w-2/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <input type="text" id="contactId" placeholder="ไอดี เช่น @vervejuice" class="w-2/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
                 </div>
             </div>
 
@@ -64,7 +84,7 @@
                 <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none h-24"></textarea>
             </div>
 
-            <h2 class="text-2xl font-bold mb-4 cute-gradient">เมนู</h2>
+            <h2 class="text-2xl font-bold mb-4 cute-gradient cute-font">เมนู</h2>
             <div id="menu-items" class="space-y-4">
                 <!-- Menu items will be rendered here by JavaScript -->
             </div>
@@ -81,7 +101,7 @@
 
         <!-- Payment Section -->
         <div id="payment-section" class="hidden">
-            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient">ชำระเงิน</h1>
+            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">ชำระเงิน</h1>
 
             <!-- Back Button -->
             <button id="back-to-menu-btn" class="mb-4 px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-colors">
@@ -135,15 +155,16 @@
                 <img id="slip-preview" src="#" alt="Slip Preview" class="max-w-xs max-h-40 rounded-lg object-contain border border-gray-300" />
             </div>
 
-            <button id="upload-slip-btn" class="w-full mt-6 bg-lime-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-lime-500 transition-colors">
-                แจ้งโอนเงิน
+            <button id="upload-slip-btn" class="w-full mt-6 bg-lime-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-lime-500 transition-colors flex items-center justify-center">
+                <span id="upload-slip-text">แจ้งโอนเงิน</span>
+                <div id="upload-slip-spinner" class="spinner hidden ml-2"></div>
             </button>
         </div>
 
         <!-- Confirmation Section -->
         <div id="confirmation-section" class="hidden text-center">
             <svg class="mx-auto h-16 w-16 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <h1 class="text-3xl font-bold text-center mt-4 text-pink-600">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
+            <h1 class="text-3xl font-bold text-center mt-4 text-pink-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
             <p class="mt-2 text-gray-600">เราได้รับสลิปการโอนเงินเรียบร้อยแล้ว จะรีบตรวจสอบและจัดเตรียมน้ำผลไม้ให้คุณค่ะ</p>
             <button onclick="window.location.reload()" class="mt-6 bg-gray-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-gray-500 transition-colors">
                 สั่งสินค้าเพิ่ม
@@ -174,8 +195,9 @@
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://placehold.co/80x80/fed7aa/111827?text=Recharge%20Me' }
             ];
 
-            const n8nWebhookUrlNewOrder = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; //YOUR_N8N_WEBHOOK_URL_FOR_NEW_ORDER
-            const n8nWebhookUrlPayment = "https://kornkawes.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; //YOUR_N8N_WEBHOOK_URL_FOR_PAYMENT
+            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Google Sheet และ Telegram โดยเฉพาะ ⚠️
+            const n8nWebhookUrlGoogleSheet = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_GOOGLE_SHEET
+            const n8nWebhookUrlTelegram = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763"; // YOUR_N8N_WEBHOOK_URL_FOR_TELEGRAM
 
             const menuItemsEl = document.getElementById('menu-items');
             const totalPriceEl = document.getElementById('total-price');
@@ -196,51 +218,22 @@
             const slipPreviewEl = document.getElementById('slip-preview');
             const uploadSlipBtn = document.getElementById('upload-slip-btn');
             const backToMenuBtn = document.getElementById('back-to-menu-btn');
+            const uploadSlipTextEl = document.getElementById('upload-slip-text');
+            const uploadSlipSpinnerEl = document.getElementById('upload-slip-spinner');
             
-            // New QR Code elements
             const qrCodeImage = document.getElementById('qrCodeImage');
 
             let order = { items: {}, total: 0 };
             
-            // Function to handle Gemini API call for generating text
-            async function generateAiProperties(juiceName, ingredients, existingProperties, targetDiv) {
-                targetDiv.innerHTML = '<p class="text-sm">กำลังสร้างสรรพคุณใหม่...✨</p>';
-                targetDiv.classList.remove('hidden');
-
-                const prompt = `เขียนคำอธิบายสรรพคุณของน้ำผลไม้ "Verve Juice" ในภาษาไทยที่น่าสนใจและเป็นมิตร โดยใช้ข้อมูลต่อไปนี้:
-                ชื่อ: ${juiceName}
-                ส่วนผสม: ${ingredients}
-                สรรพคุณหลัก: ${existingProperties}
-                เน้นการขยายความสรรพคุณให้เข้าใจง่ายขึ้นในเชิงไลฟ์สไตล์ หรือเพิ่มรายละเอียดที่น่าสนใจ ไม่ต้องเขียนเป็นรายการ แต่ให้เป็นประโยคที่อ่านง่าย`;
-
-                let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-                
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-                    
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        targetDiv.innerHTML = `<p>${text}</p>`;
-                    } else {
-                        targetDiv.innerHTML = `<p class="text-red-500">ไม่สามารถสร้างสรรพคุณได้ในขณะนี้ กรุณาลองใหม่</p>`;
-                    }
-                } catch (error) {
-                    console.error('Error fetching from Gemini API:', error);
-                    targetDiv.innerHTML = `<p class="text-red-500">เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่</p>`;
-                }
-            }
-
+            // Function to show a temporary message box
+            const showMessageBox = (message, color) => {
+                const messageBox = document.createElement('div');
+                messageBox.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-${color}-500 text-white px-6 py-4 rounded-xl shadow-lg z-50 transition-all duration-300`;
+                messageBox.textContent = message;
+                document.body.appendChild(messageBox);
+                setTimeout(() => { messageBox.remove(); }, 3000);
+            };
+            
             window.toggleAllergyInput = (checkbox) => {
                 const itemId = checkbox.dataset.id;
                 const allergyInputDiv = document.getElementById(`allergy-input-${itemId}`);
@@ -292,16 +285,6 @@
                                         <p class="text-sm text-gray-500">ราคา: ฿${item.price} ต่อ ${item.unit}</p>
                                         <p class="text-xs text-gray-400 mt-1">ส่วนผสม: ${item.ingredients}</p>
                                         <p class="text-xs text-gray-400 mt-1">${item.properties}</p>
-                                        
-                                        <!-- AI Feature Section -->
-                                        <div class="flex items-center mt-2">
-                                            <button data-id="${item.id}" data-action="generate-properties" class="px-3 py-1 text-xs bg-indigo-500 text-white rounded-full shadow-md hover:bg-indigo-600 transition-colors">
-                                                ✨ เพิ่มเติมสรรพคุณจาก AI
-                                            </button>
-                                        </div>
-                                        <div id="ai-properties-${item.id}" class="mt-2 p-3 text-sm rounded-lg bg-indigo-100 text-indigo-800 hidden">
-                                            <!-- AI generated text will appear here -->
-                                        </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-pink-400 hover:bg-pink-500 transition-colors rounded-full">-</button>
@@ -335,16 +318,9 @@
 
                 const itemId = button.dataset.id;
                 const action = button.dataset.action;
-                const item = menu.find(i => i.id === itemId);
-
-                if (action === 'generate-properties') {
-                    const aiPropertiesDiv = document.getElementById(`ai-properties-${itemId}`);
-                    generateAiProperties(item.name, item.ingredients, item.properties, aiPropertiesDiv);
-                    return;
-                }
-
+                
                 if (!order.items[itemId]) {
-                    order.items[itemId] = { ...item, quantity: 0, allergyNote: '' };
+                    order.items[itemId] = { ...menu.find(item => item.id === itemId), quantity: 0, allergyNote: '' };
                 }
 
                 if (action === 'plus') {
@@ -365,15 +341,26 @@
                 updateTotal();
             });
 
-            confirmOrderBtn.addEventListener('click', () => {
+            confirmOrderBtn.addEventListener('click', async () => {
                 const customerName = customerNameEl.value.trim();
                 const customerPhone = customerPhoneEl.value.trim();
                 const contactApp = contactAppEl.value.trim();
                 const contactId = contactIdEl.value.trim();
                 const customerNote = customerNoteEl.value.trim();
 
-                if (!customerName || !customerPhone || order.total === 0) {
-                    showMessageBox('กรุณากรอกชื่อ, ช่องทางการติดต่อ และเลือกเมนูอย่างน้อย 1 รายการ', 'red');
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(customerPhone)) {
+                    showMessageBox('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (ตัวเลข 10 หลัก)', 'red');
+                    return;
+                }
+
+                if (Object.keys(order.items).length === 0) {
+                    showMessageBox('กรุณาเลือกเมนูอย่างน้อย 1 รายการ', 'red');
+                    return;
+                }
+
+                if (!customerName) {
+                    showMessageBox('กรุณากรอกชื่อให้ครบถ้วน', 'red');
                     return;
                 }
 
@@ -388,18 +375,9 @@
                     total: order.total
                 };
 
+                // ➡️ ไม่มีการส่งข้อมูลไป n8n ในขั้นตอนนี้, เพียงบันทึกข้อมูลไว้ใน localStorage
                 localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
-
-                if (n8nWebhookUrlNewOrder) {
-                    fetch(n8nWebhookUrlNewOrder, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(finalOrder)
-                    }).catch(error => console.error('Error sending data to n8n:', error));
-                } else {
-                    console.warn('n8nWebhookUrlNewOrder ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                }
-
+                
                 renderPaymentPage(finalOrder);
                 orderFormSection.classList.add('hidden');
                 paymentSection.classList.remove('hidden');
@@ -445,31 +423,104 @@
                 }
             });
 
-            uploadSlipBtn.addEventListener('click', () => {
+            uploadSlipBtn.addEventListener('click', async () => {
                 const slipFile = slipUploadEl.files[0];
                 if (!slipFile) {
                     showMessageBox('กรุณาอัปโหลดสลิปการโอนเงิน', 'red');
                     return;
                 }
 
+                uploadSlipBtn.disabled = true;
+                uploadSlipTextEl.classList.add('hidden');
+                uploadSlipSpinnerEl.classList.remove('hidden');
+
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
+                const orderTime = new Date().toISOString();
 
-                if (n8nWebhookUrlPayment) {
-                    const paymentInfo = {
-                        ...currentOrder,
-                        paymentSlipFileName: slipFile.name,
-                        paymentTimestamp: new Date().toISOString()
-                    };
+                // 💡 ตรงนี้คือส่วนสำคัญที่ขาดหายไป: คุณต้องเขียนโค้ดสำหรับอัปโหลดไฟล์สลิป
+                //    เช่น อัปโหลดไปยัง Cloud Storage (อย่าง Google Cloud Storage หรือ Firebase Storage)
+                //    เพื่อที่จะได้ URL ของรูปภาพจริง ๆ มาใช้
+                //    ในโค้ดตัวอย่างนี้ เราจะใช้ URL ที่เป็นรูปภาพปลอม เพื่อให้ n8n สามารถทำงานได้ แต่ในความเป็นจริงแล้ว
+                //    มันจะไม่ใช่สลิปที่ลูกค้าอัปโหลดมา
+                //
+                //    หากคุณมีระบบหลังบ้านหรือ Cloud Storage แล้ว ให้ใช้โค้ดดังนี้:
+                //    const paymentSlipUrl = await uploadFile(slipFile);
+                const paymentSlipUrl = 'https://placehold.co/400x400/eeeeee/333333?text=Slip+Placeholder';
 
-                    fetch(n8nWebhookUrlPayment, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(paymentInfo)
-                    }).catch(error => console.error('Error sending data to n8n:', error));
-                } else {
-                    console.warn('n8nWebhookUrlPayment ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
+                // ✅ จัดเตรียมข้อมูลสำหรับ Google Sheet
+                const sheetPayload = {
+                    customerName: currentOrder.customerName,
+                    customerContact: currentOrder.customerContact.phone,
+                    items: currentOrder.items.map(item => {
+                        let itemString = `${item.name} x ${item.quantity}`;
+                        if (item.allergyNote) {
+                            itemString += ` (หมายเหตุแพ้: ${item.allergyNote})`;
+                        }
+                        return itemString;
+                    }).join(', '),
+                    orderTime: orderTime,
+                    paymentTotal: currentOrder.total,
+                    paymentSlipUrl: paymentSlipUrl
+                };
+
+                // ✅ จัดเตรียมข้อมูลสำหรับ Telegram (ข้อความที่อ่านง่าย)
+                let telegramMessage = `🍹 *Verve Juice ออเดอร์ใหม่!* 🍹\n\n`;
+                telegramMessage += `*ชื่อลูกค้า:* ${currentOrder.customerName}\n`;
+                telegramMessage += `*ข้อมูลติดต่อ:* ${currentOrder.customerContact.phone}`;
+                if (currentOrder.customerContact.other) {
+                    telegramMessage += ` (${currentOrder.customerContact.other})`;
+                }
+                telegramMessage += `\n*รายการที่สั่ง:*\n`;
+                currentOrder.items.forEach(item => {
+                    telegramMessage += `- ${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})\n`;
+                    if (item.allergyNote) {
+                        telegramMessage += `  (หมายเหตุ: ${item.allergyNote})\n`;
+                    }
+                });
+                if (currentOrder.customerNote) {
+                    telegramMessage += `\n*หมายเหตุ:* ${currentOrder.customerNote}\n`;
+                }
+                telegramMessage += `\n*ยอดรวม:* ฿${currentOrder.total}\n`;
+                telegramMessage += `\n*สลิปการโอนเงิน:* ${paymentSlipUrl}`;
+
+                // 🚀 ส่งข้อมูลไปที่ n8n webhook ทั้งสองตัว
+                try {
+                    // ส่งไป Google Sheet
+                    if (n8nWebhookUrlGoogleSheet) {
+                        const responseSheet = await fetch(n8nWebhookUrlGoogleSheet, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(sheetPayload)
+                        });
+                        if (!responseSheet.ok) {
+                            console.error(`Error sending data to n8n (Google Sheet): HTTP status ${responseSheet.status}`);
+                        }
+                    } else {
+                        console.warn('n8nWebhookUrlGoogleSheet ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
+                    }
+                    
+                    // ส่งไป Telegram
+                    if (n8nWebhookUrlTelegram) {
+                        const responseTelegram = await fetch(n8nWebhookUrlTelegram, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: telegramMessage })
+                        });
+                        if (!responseTelegram.ok) {
+                            console.error(`Error sending data to n8n (Telegram): HTTP status ${responseTelegram.status}`);
+                        }
+                    } else {
+                        console.warn('n8nWebhookUrlTelegram ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
+                    }
+                } catch (error) {
+                    console.error('Error sending data to n8n:', error);
+                } finally {
+                    uploadSlipBtn.disabled = false;
+                    uploadSlipTextEl.classList.remove('hidden');
+                    uploadSlipSpinnerEl.classList.add('hidden');
                 }
 
+                // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
                 paymentSection.classList.add('hidden');
                 confirmationSection.classList.remove('hidden');
             });
@@ -495,4 +546,3 @@
     </script>
 </body>
 </html>
-
