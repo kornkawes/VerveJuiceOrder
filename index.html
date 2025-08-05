@@ -185,14 +185,22 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             const menu = [
-                { id: 'apple-kiss', name: 'Apple Kiss', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'สรรพคุณ: ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://placehold.co/80x80/f87171/111827?text=Apple%20Kiss' },
-                { id: 'blush-bloom', name: 'Blush Bloom', price: 60, unit: 'ขวด', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'สรรพคุณ: ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://placehold.co/80x80/fbcfe8/111827?text=Blush%20Bloom' },
-                { id: 'happy-tummy', name: 'Happy Tummy', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'สรรพคุณ: ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://placehold.co/80x80/bae6fd/111827?text=Happy%20Tummy' },
-                { id: 'hearty-green', name: 'Hearty Green', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'สรรพคุณ: ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://placehold.co/80x80/d9f991/111827?text=Hearty%20Green' },
-                { id: 'sweet-detox', name: 'Sweet Detox', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'สรรพคุณ: ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://placehold.co/80x80/fca5a5/111827?text=Sweet%20Detox' },
-                { id: 'beet-love', name: 'Beet Love', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'สรรพคุณ: ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://placehold.co/80x80/e781a7/111827?text=Beet%20Love' },
-                { id: 'smart-sip', name: 'Smart Sip', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'สรรพคุณ: ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://placehold.co/80x80/6ee7b7/111827?text=Smart%20Sip' },
-                { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://placehold.co/80x80/fed7aa/111827?text=Recharge%20Me' }
+                { id: 'apple-kiss', name: 'Apple Kiss', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'สรรพคุณ: ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true
+' },
+                { id: 'blush-bloom', name: 'Blush Bloom', price: 60, unit: 'ขวด', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'สรรพคุณ: ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true
+' },
+                { id: 'happy-tummy', name: 'Happy Tummy', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'สรรพคุณ: ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true
+' },
+                { id: 'hearty-green', name: 'Hearty Green', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'สรรพคุณ: ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true
+' },
+                { id: 'sweet-detox', name: 'Sweet Detox', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'สรรพคุณ: ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true
+' },
+                { id: 'beet-love', name: 'Beet Love', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'สรรพคุณ: ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true
+' },
+                { id: 'smart-sip', name: 'Smart Sip', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'สรรพคุณ: ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true
+' },
+                { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true
+' }
             ];
 
             // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Workflow ใหม่ที่รวม Google Sheet และ Telegram ⚠️
@@ -511,5 +519,6 @@
     </script>
 </body>
 </html>
+
 
 
