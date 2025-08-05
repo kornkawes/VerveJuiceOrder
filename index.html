@@ -6,15 +6,15 @@
     <title>Verve Juice Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* นำเข้าฟอนต์ Kanit จาก Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@400;700&display=swap');
+        /* Import Kanit, Rubik Bubbles, and Noto Sans Thai fonts from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@400;700&family=Rubik+Bubbles&family=Noto+Sans+Thai:wght@400;700&display=swap');
         
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f3e9;
+            font-family: 'Noto Sans Thai', sans-serif; /* Changed to Noto Sans Thai */
+            background-color: #f7f3e9; /* Kept original light background */
         }
         
-        /* สไตล์สำหรับชื่อร้านและหัวข้อเมนู */
+        /* Styles for store name and menu headings */
         .cute-font {
             font-family: 'Kanit', sans-serif;
         }
@@ -27,12 +27,9 @@
         .card {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        .cute-gradient {
-            background-image: linear-gradient(to right, #a7f3d0, #fbcfe8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        /* Removed cute-gradient as Verve Juice name will have a solid color */
         .btn-plus-minus {
+            /* These properties already make the buttons circular */
             @apply w-8 h-8 flex items-center justify-center rounded-full text-white text-lg font-bold;
         }
         input[type="number"]::-webkit-inner-spin-button,
@@ -57,51 +54,56 @@
         }
     </style>
 </head>
-<body class="bg-green-50 flex items-center justify-center min-h-screen p-4">
+<body class="bg-emerald-50 flex items-center justify-center min-h-screen p-4">
 
     <div class="container bg-white p-6 rounded-3xl shadow-xl w-full max-w-lg transition-all duration-300">
 
         <!-- Order Form Section -->
         <div id="order-form-section">
-            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">Verve Juice</h1>
+            <!-- Updated font and color for Verve Juice name -->
+            <h1 class="text-3xl font-bold text-center mb-6" style="color: #39531a; font-family: 'Rubik Bubbles', cursive;">Verve Juice</h1>
 
             <div class="mb-4">
                 <label for="customerName" class="block text-gray-700 font-bold mb-2">ชื่อของคุณ</label>
-                <input type="text" id="customerName" placeholder="กรุณากรอกชื่อ-นามสกุล" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                <input type="text" id="customerName" placeholder="กรุณากรอกชื่อ-นามสกุล" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
             </div>
 
             <div class="mb-4">
                 <label for="customerPhone" class="block text-gray-700 font-bold mb-2">ช่องทางการติดต่อ</label>
-                <input type="tel" id="customerPhone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 mb-2">
+                <input type="tel" id="customerPhone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 mb-2">
                 <div class="flex space-x-2">
-                    <input type="text" id="contactApp" placeholder="ชื่อแอป เช่น Line" class="w-1/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <input type="text" id="contactId" placeholder="ไอดี เช่น @vervejuice" class="w-2/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <input type="text" id="contactApp" placeholder="ชื่อแอป เช่น Line" class="w-1/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
+                    <input type="text" id="contactId" placeholder="ไอดี เช่น @vervejuice" class="w-2/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
                 </div>
             </div>
 
             <div class="mb-4">
                 <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
-                <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none h-24"></textarea>
+                <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
             </div>
 
-            <h2 class="text-2xl font-bold mb-4 cute-gradient cute-font">เมนู</h2>
+            <!-- Changed menu heading color to match new theme -->
+            <h2 class="text-2xl font-bold mb-4" style="color: #39531a;">เมนู</h2>
             <div id="menu-items" class="space-y-4">
                 <!-- Menu items will be rendered here by JavaScript -->
             </div>
 
-            <div class="mt-6 p-4 bg-pink-100 rounded-2xl flex justify-between items-center">
+            <!-- Changed total price box and text color -->
+            <div class="mt-6 p-4 bg-emerald-100 rounded-2xl flex justify-between items-center">
                 <span class="text-lg font-bold text-gray-800">ราคารวม:</span>
-                <span id="total-price" class="text-2xl font-extrabold text-pink-600">฿0</span>
+                <span id="total-price" class="text-2xl font-extrabold text-emerald-600">฿0</span>
             </div>
 
-            <button id="confirm-order-btn" class="w-full mt-6 bg-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-pink-500 transition-colors">
+            <!-- Changed confirm order button color -->
+            <button id="confirm-order-btn" class="w-full mt-6 bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-emerald-700 transition-colors">
                 ยืนยันการสั่งซื้อ
             </button>
         </div>
 
         <!-- Payment Section -->
         <div id="payment-section" class="hidden">
-            <h1 class="text-3xl font-bold text-center mb-6 cute-gradient cute-font">ชำระเงิน</h1>
+            <!-- Changed payment heading color to match new theme -->
+            <h1 class="text-3xl font-bold text-center mb-6" style="color: #39531a;">ชำระเงิน</h1>
 
             <!-- Back Button -->
             <button id="back-to-menu-btn" class="mb-4 px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-colors">
@@ -113,9 +115,10 @@
                 <!-- Order summary will be rendered here -->
             </div>
             
-            <div class="p-4 bg-lime-100 rounded-2xl text-center mb-6">
-                <p class="text-xl font-bold text-lime-700">ยอดที่ต้องชำระ</p>
-                <p id="payment-total" class="text-4xl font-extrabold text-lime-600 my-2">฿0</p>
+            <!-- Changed payment total box and text color -->
+            <div class="p-4 bg-emerald-100 rounded-2xl text-center mb-6">
+                <p class="text-xl font-bold text-emerald-700">ยอดที่ต้องชำระ</p>
+                <p id="payment-total" class="text-4xl font-extrabold text-emerald-600 my-2">฿0</p>
             </div>
 
             <div class="space-y-4">
@@ -146,7 +149,7 @@
 
             <div class="mt-6">
                 <label for="slipUpload" class="block text-gray-700 font-bold mb-2">อัปโหลดสลิปการโอน</label>
-                <input type="file" id="slipUpload" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-300">
+                <input type="file" id="slipUpload" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
             </div>
 
             <!-- Slip Preview Section -->
@@ -155,7 +158,8 @@
                 <img id="slip-preview" src="#" alt="Slip Preview" class="max-w-xs max-h-40 rounded-lg object-contain border border-gray-300" />
             </div>
 
-            <button id="upload-slip-btn" class="w-full mt-6 bg-lime-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-lime-500 transition-colors flex items-center justify-center">
+            <!-- Changed upload slip button color -->
+            <button id="upload-slip-btn" class="w-full mt-6 bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-emerald-700 transition-colors flex items-center justify-center">
                 <span id="upload-slip-text">แจ้งโอนเงิน</span>
                 <div id="upload-slip-spinner" class="spinner hidden ml-2"></div>
             </button>
@@ -163,8 +167,9 @@
 
         <!-- Confirmation Section -->
         <div id="confirmation-section" class="hidden text-center">
-            <svg class="mx-auto h-16 w-16 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <h1 class="text-3xl font-bold text-center mt-4 text-pink-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
+            <!-- Changed checkmark and heading color -->
+            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h1 class="text-3xl font-bold text-center mt-4 text-emerald-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
             <p class="mt-2 text-gray-600">เราได้รับสลิปการโอนเงินเรียบร้อยแล้ว จะรีบตรวจสอบและจัดเตรียมน้ำผลไม้ให้คุณค่ะ</p>
             <button onclick="window.location.reload()" class="mt-6 bg-gray-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-gray-500 transition-colors">
                 สั่งสินค้าเพิ่ม
@@ -185,25 +190,17 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             const menu = [
-                { id: 'apple-kiss', name: 'Apple Kiss', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'สรรพคุณ: ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true
-' },
-                { id: 'blush-bloom', name: 'Blush Bloom', price: 60, unit: 'ขวด', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'สรรพคุณ: ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true
-' },
-                { id: 'happy-tummy', name: 'Happy Tummy', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'สรรพคุณ: ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true
-' },
-                { id: 'hearty-green', name: 'Hearty Green', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'สรรพคุณ: ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true
-' },
-                { id: 'sweet-detox', name: 'Sweet Detox', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'สรรพคุณ: ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true
-' },
-                { id: 'beet-love', name: 'Beet Love', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'สรรพคุณ: ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true
-' },
-                { id: 'smart-sip', name: 'Smart Sip', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'สรรพคุณ: ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true
-' },
-                { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true
-' }
+                { id: 'apple-kiss', name: 'Apple Kiss', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'สรรพคุณ: ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true' },
+                { id: 'blush-bloom', name: 'Blush Bloom', price: 60, unit: 'ขวด', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'สรรพคุณ: ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true' },
+                { id: 'happy-tummy', name: 'Happy Tummy', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'สรรพคุณ: ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true' },
+                { id: 'hearty-green', name: 'Hearty Green', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'สรรพคุณ: ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true' },
+                { id: 'sweet-detox', name: 'Sweet Detox', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'สรรพคุณ: ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true' },
+                { id: 'beet-love', name: 'Beet Love', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'สรรพคุณ: ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true' },
+                { id: 'smart-sip', name: 'Smart Sip', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'สรรพคุณ: ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true' },
+                { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
             ];
 
-            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Workflow ใหม่ที่รวม Google Sheet และ Telegram ⚠️
+            // ⚠️ Please change the URL below to the n8n webhook you created for the new Workflow that integrates Google Sheet and Telegram ⚠️
             const n8nWebhookUrl = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
             const menuItemsEl = document.getElementById('menu-items');
@@ -284,7 +281,8 @@
 
                     const itemHtml = `
                         <div class="p-4 bg-gray-50 rounded-xl card flex items-center space-x-4">
-                            <img src="${item.imageUrl}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
+                            <!-- Increased image size from w-24 h-24 to w-32 h-32 -->
+                            <img src="${item.imageUrl}" alt="${item.name}" class="w-32 h-32 rounded-lg object-cover flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex-1">
@@ -294,19 +292,22 @@
                                         <p class="text-xs text-gray-400 mt-1">${item.properties}</p>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-pink-400 hover:bg-pink-500 transition-colors rounded-full">-</button>
+                                        <!-- Changed plus/minus button colors -->
+                                        <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-emerald-400 hover:bg-emerald-500 transition-colors rounded-full">-</button>
                                         <input type="number" data-id="${item.id}" class="w-12 text-center border-none bg-transparent font-bold focus:outline-none" value="${quantity}" min="0" readonly>
-                                        <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-lime-400 hover:bg-lime-500 transition-colors rounded-full">+</button>
+                                        <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-full">+</button>
                                     </div>
                                 </div>
 
                                 <div class="mt-2 text-sm text-gray-700">
                                     <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" class="form-checkbox h-4 w-4 text-lime-600 rounded" data-id="${item.id}" onchange="toggleAllergyInput(this)">
+                                        <!-- Changed checkbox color -->
+                                        <input type="checkbox" class="form-checkbox h-4 w-4 text-emerald-600 rounded" data-id="${item.id}" onchange="toggleAllergyInput(this)">
                                         <span>แจ้งส่วนผสมที่แพ้ (ถ้ามี)</span>
                                     </label>
                                     <div id="allergy-input-${item.id}" class="mt-2 ${hasAllergy ? '' : 'hidden'}">
-                                        <input type="text" data-id="${item.id}" value="${allergyNote}" oninput="updateAllergyNote(this)" placeholder="เช่น แพ้มะม่วง" class="w-full px-3 py-2 border rounded-xl focus:outline-none focus:ring-1 focus:ring-lime-500">
+                                        <!-- Changed allergy input focus ring color -->
+                                        <input type="text" data-id="${item.id}" value="${allergyNote}" oninput="updateAllergyNote(this)" placeholder="เช่น แพ้มะม่วง" class="w-full px-3 py-2 border rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500">
                                         <p class="mt-1 text-xs text-red-500">
                                             หมายเหตุ: รสชาติอาจแตกต่างจากสูตรปกติเนื่องจากมีการปรับเปลี่ยนส่วนผสม
                                         </p>
@@ -443,13 +444,13 @@
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
                 const orderTime = new Date().toISOString();
 
-                // 💡 แปลงไฟล์ภาพให้เป็น Base64 String เพื่อส่งไปยัง n8n
+                // 💡 Convert image file to Base64 String to send to n8n
                 const reader = new FileReader();
                 reader.readAsDataURL(slipFile);
                 reader.onloadend = async () => {
                     const base64Slip = reader.result;
 
-                    // ✅ จัดเตรียม Payload สำหรับ n8n
+                    // ✅ Prepare Payload for n8n
                     const payload = {
                         customerName: currentOrder.customerName,
                         customerContact: currentOrder.customerContact,
@@ -457,10 +458,10 @@
                         items: currentOrder.items,
                         total: currentOrder.total,
                         orderTime: orderTime,
-                        paymentSlipUrl: base64Slip // ส่ง Base64 String ของรูปสลิป
+                        paymentSlipUrl: base64Slip // Send Base64 String of the slip image
                     };
     
-                    // 🚀 ส่งข้อมูลไปที่ n8n webhook
+                    // 🚀 Send data to n8n webhook
                     try {
                         if (n8nWebhookUrl) {
                             const response = await fetch(n8nWebhookUrl, {
@@ -473,7 +474,7 @@
                                 showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล!', 'red');
                             }
                         } else {
-                            console.warn('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
+                            console.warn('n8nWebhookUrl is not set. Skipping data submission.');
                         }
                     } catch (error) {
                         console.error('Error sending data to n8n:', error);
@@ -484,7 +485,7 @@
                         uploadSlipSpinnerEl.classList.add('hidden');
                     }
     
-                    // ➡️ แสดงหน้ายืนยันการสั่งซื้อ
+                    // ➡️ Show confirmation page
                     paymentSection.classList.add('hidden');
                     confirmationSection.classList.remove('hidden');
                 };
@@ -519,6 +520,3 @@
     </script>
 </body>
 </html>
-
-
-
