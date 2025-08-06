@@ -187,6 +187,37 @@
             document.body.appendChild(messageBox);
             setTimeout(() => { messageBox.remove(); }, 3000);
         };
+
+        // Function for exponential backoff with retry logic
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    } else {
+                        // Log detailed error if response is not ok but fetched
+                        console.error(`Attempt ${i + 1} failed with status: ${response.status} - ${response.statusText}`);
+                        if (response.status === 429 || response.status >= 500) { // Retry on Too Many Requests or Server Errors
+                            await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                        } else {
+                            // For other client errors (e.g., 400, 401, 404), don't retry, just throw
+                            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                        }
+                    }
+                } catch (error) {
+                    // Log the error caught during fetch (e.g., TypeError: Failed to fetch)
+                    console.error(`Attempt ${i + 1} caught error:`, error);
+                    if (i < retries - 1) {
+                        // Wait before retrying
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    } else {
+                        throw error; // Re-throw if last retry fails
+                    }
+                }
+            }
+            throw new Error('Max retries exceeded'); // Should not be reached if retries are exhausted
+        }
         
         document.addEventListener('DOMContentLoaded', () => {
             const menu = [
@@ -287,9 +318,9 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex-1">
                                         <h3 class="font-bold text-gray-800">${item.name}</h3>
-                                        <p class="text-sm text-gray-500">ราคา: ฿${item.price} ต่อ ${item.unit}</p>
-                                        <p class="text-xs text-gray-400 mt-1">ส่วนผสม: ${item.ingredients}</p>
-                                        <p class="text-xs text-gray-400 mt-1">${item.properties}</p>
+                                        <p class="text-sm text-gray-500"><span class="font-bold">ราคา:</span> ฿${item.price} ต่อ ${item.unit}</p>
+                                        <p class="text-xs text-gray-400 mt-1"><span class="font-bold">ส่วนผสม:</span> ${item.ingredients}</p>
+                                        <p class="text-xs text-gray-400 mt-1"><span class="font-bold">สรรพคุณ:</span> ${item.properties}</p>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <!-- Changed plus/minus button colors -->
@@ -461,33 +492,31 @@
                         paymentSlipUrl: base64Slip // Send Base64 String of the slip image
                     };
     
-                    // 🚀 Send data to n8n webhook
+                    // 🚀 Send data to n8n webhook using fetchWithRetry
                     try {
                         if (n8nWebhookUrl) {
-                            const response = await fetch(n8nWebhookUrl, {
+                            await fetchWithRetry(n8nWebhookUrl, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)
                             });
-                            if (!response.ok) {
-                                console.error(`Error sending data to n8n: HTTP status ${response.status}`);
-                                showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล!', 'red');
-                            }
+                            // If fetchWithRetry completes without throwing, it means the request was successful
+                            // ➡️ Show confirmation page
+                            paymentSection.classList.add('hidden');
+                            confirmationSection.classList.remove('hidden');
                         } else {
-                            console.warn('n8nWebhookUrl is not set. Skipping data submission.');
+                            console.warn('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
+                            showMessageBox('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ไม่สามารถส่งข้อมูลได้', 'orange');
                         }
                     } catch (error) {
                         console.error('Error sending data to n8n:', error);
-                        showMessageBox('เกิดข้อผิดพลาดในการเชื่อมต่อ!', 'red');
+                        // More specific message for network/fetch errors
+                        showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล: กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและ URL ของ n8n', 'red');
                     } finally {
                         uploadSlipBtn.disabled = false;
                         uploadSlipTextEl.classList.remove('hidden');
                         uploadSlipSpinnerEl.classList.add('hidden');
                     }
-    
-                    // ➡️ Show confirmation page
-                    paymentSection.classList.add('hidden');
-                    confirmationSection.classList.remove('hidden');
                 };
 
                 reader.onerror = (error) => {
