@@ -231,7 +231,7 @@
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
             ];
 
-            // ⚠️ Please change the URL below to the n8n webhook you created for the new Workflow that integrates Google Sheet and Telegram ⚠️
+            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Workflow ใหม่ที่รวม Google Sheet และ Telegram ⚠️
             const n8nWebhookUrl = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
             const menuItemsEl = document.getElementById('menu-items');
@@ -312,7 +312,6 @@
 
                     const itemHtml = `
                         <div class="p-4 bg-gray-50 rounded-xl card flex items-center space-x-4">
-                            <!-- Increased image size from w-24 h-24 to w-32 h-32 -->
                             <img src="${item.imageUrl}" alt="${item.name}" class="w-32 h-32 rounded-lg object-cover flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center justify-between mb-2">
@@ -323,7 +322,6 @@
                                         <p class="text-xs text-gray-400 mt-1"><span class="font-bold">สรรพคุณ:</span> ${item.properties}</p>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <!-- Changed plus/minus button colors -->
                                         <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-emerald-400 hover:bg-emerald-500 transition-colors rounded-full">-</button>
                                         <input type="number" data-id="${item.id}" class="w-12 text-center border-none bg-transparent font-bold focus:outline-none" value="${quantity}" min="0" readonly>
                                         <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-full">+</button>
@@ -332,12 +330,10 @@
 
                                 <div class="mt-2 text-sm text-gray-700">
                                     <label class="flex items-center space-x-2 cursor-pointer">
-                                        <!-- Changed checkbox color -->
                                         <input type="checkbox" class="form-checkbox h-4 w-4 text-emerald-600 rounded" data-id="${item.id}" onchange="toggleAllergyInput(this)">
                                         <span>แจ้งส่วนผสมที่แพ้ (ถ้ามี)</span>
                                     </label>
                                     <div id="allergy-input-${item.id}" class="mt-2 ${hasAllergy ? '' : 'hidden'}">
-                                        <!-- Changed allergy input focus ring color -->
                                         <input type="text" data-id="${item.id}" value="${allergyNote}" oninput="updateAllergyNote(this)" placeholder="เช่น แพ้มะม่วง" class="w-full px-3 py-2 border rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500">
                                         <p class="mt-1 text-xs text-red-500">
                                             หมายเหตุ: รสชาติอาจแตกต่างจากสูตรปกติเนื่องจากมีการปรับเปลี่ยนส่วนผสม
@@ -414,6 +410,7 @@
                     total: order.total
                 };
                 
+                // ➡️ บันทึกข้อมูลไว้ใน localStorage เท่านั้น ไม่มีการส่งไป n8n ในขั้นตอนนี้
                 localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
                 
                 renderPaymentPage(finalOrder);
@@ -549,6 +546,3 @@
     </script>
 </body>
 </html>
-
-
-
