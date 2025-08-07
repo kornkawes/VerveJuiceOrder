@@ -483,7 +483,7 @@
             });
 
             // =================================================================
-            //  NEW UPLOAD LOGIC: This part has been completely changed.
+            //  UPLOAD LOGIC: This part has been updated to send separate fields.
             // =================================================================
             uploadSlipBtn.addEventListener('click', async () => {
                 const slipFile = slipUploadEl.files[0];
@@ -498,26 +498,26 @@
 
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
                 
-                // 1. Create a FormData object to hold the file and text data.
+                // 1. Create a FormData object.
                 const formData = new FormData();
 
                 // 2. Append the slip image file.
-                // The name 'slipImage' is important for n8n to identify the file.
                 formData.append('slipImage', slipFile);
 
-                // 3. Append all other order data as a single JSON string.
-                // This keeps the data structured and easy to parse in n8n.
-                const orderData = {
-                    ...currentOrder,
-                    orderTime: new Date().toISOString()
-                };
-                formData.append('orderData', JSON.stringify(orderData));
+                // 3. Append each piece of order data as a separate field.
+                formData.append('queueNumber', currentOrder.queueNumber);
+                formData.append('customerName', currentOrder.customerName);
+                formData.append('customerNote', currentOrder.customerNote);
+                formData.append('total', currentOrder.total);
+                formData.append('orderTime', new Date().toISOString());
+                
+                // For nested data (objects/arrays), convert them to a JSON string to send.
+                formData.append('customerContact', JSON.stringify(currentOrder.customerContact));
+                formData.append('items', JSON.stringify(currentOrder.items));
         
                 // 4. Send the FormData to the n8n webhook.
                 try {
                     if (n8nWebhookUrl) {
-                        // NOTE: Do NOT set the 'Content-Type' header manually.
-                        // The browser will set it to 'multipart/form-data' automatically.
                         await fetchWithRetry(n8nWebhookUrl, {
                             method: 'POST',
                             body: formData 
