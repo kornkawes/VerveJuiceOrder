@@ -149,7 +149,7 @@
 
             <div class="mt-6">
                 <label for="slipUpload" class="block text-gray-700 font-bold mb-2">อัปโหลดสลิปการโอน</label>
-                <input type="file" id="slipUpload" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
+                <input type="file" id="slipUpload" accept="image/*" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
             </div>
 
             <!-- Slip Preview Section -->
@@ -482,6 +482,9 @@
                 }
             });
 
+            // =================================================================
+            //  NEW UPLOAD LOGIC: This part has been completely changed.
+            // =================================================================
             uploadSlipBtn.addEventListener('click', async () => {
                 const slipFile = slipUploadEl.files[0];
                 if (!slipFile) {
@@ -494,56 +497,46 @@
                 uploadSlipSpinnerEl.classList.remove('hidden');
 
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
-                const orderTime = new Date().toISOString();
+                
+                // 1. Create a FormData object to hold the file and text data.
+                const formData = new FormData();
 
-                const reader = new FileReader();
-                reader.readAsDataURL(slipFile);
-                reader.onloadend = async () => {
-                    const base64Slip = reader.result;
+                // 2. Append the slip image file.
+                // The name 'slipImage' is important for n8n to identify the file.
+                formData.append('slipImage', slipFile);
 
-                    // Prepare Payload for n8n, including the queue number
-                    const payload = {
-                        queueNumber: currentOrder.queueNumber,
-                        customerName: currentOrder.customerName,
-                        customerContact: currentOrder.customerContact,
-                        customerNote: currentOrder.customerNote,
-                        items: currentOrder.items,
-                        total: currentOrder.total,
-                        orderTime: orderTime,
-                        paymentSlipUrl: base64Slip
-                    };
-        
-                    // Send data to n8n webhook using fetchWithRetry
-                    try {
-                        if (n8nWebhookUrl) {
-                            await fetchWithRetry(n8nWebhookUrl, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(payload)
-                            });
-                            paymentSection.classList.add('hidden');
-                            confirmationSection.classList.remove('hidden');
-                        } else {
-                            console.warn('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ข้ามการส่งข้อมูล.');
-                            showMessageBox('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ไม่สามารถส่งข้อมูลได้', 'orange');
-                        }
-                    } catch (error) {
-                        console.error('Error sending data to n8n:', error);
-                        showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล: กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและ URL ของ n8n', 'red');
-                    } finally {
-                        uploadSlipBtn.disabled = false;
-                        uploadSlipTextEl.classList.remove('hidden');
-                        uploadSlipSpinnerEl.classList.add('hidden');
-                    }
+                // 3. Append all other order data as a single JSON string.
+                // This keeps the data structured and easy to parse in n8n.
+                const orderData = {
+                    ...currentOrder,
+                    orderTime: new Date().toISOString()
                 };
-
-                reader.onerror = (error) => {
-                    console.error('Error reading file:', error);
-                    showMessageBox('ไม่สามารถอ่านไฟล์สลิปได้', 'red');
+                formData.append('orderData', JSON.stringify(orderData));
+        
+                // 4. Send the FormData to the n8n webhook.
+                try {
+                    if (n8nWebhookUrl) {
+                        // NOTE: Do NOT set the 'Content-Type' header manually.
+                        // The browser will set it to 'multipart/form-data' automatically.
+                        await fetchWithRetry(n8nWebhookUrl, {
+                            method: 'POST',
+                            body: formData 
+                        });
+                        
+                        paymentSection.classList.add('hidden');
+                        confirmationSection.classList.remove('hidden');
+                    } else {
+                        console.warn('n8nWebhookUrl is not set. Skipping submission.');
+                        showMessageBox('n8nWebhookUrl ไม่ได้ถูกตั้งค่า. ไม่สามารถส่งข้อมูลได้', 'orange');
+                    }
+                } catch (error) {
+                    console.error('Error sending data to n8n:', error);
+                    showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล: กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและ URL ของ n8n', 'red');
+                } finally {
                     uploadSlipBtn.disabled = false;
                     uploadSlipTextEl.classList.remove('hidden');
                     uploadSlipSpinnerEl.classList.add('hidden');
-                };
+                }
             });
 
             copyAccountBtn.addEventListener('click', () => {
@@ -567,4 +560,3 @@
     </script>
 </body>
 </html>
-
