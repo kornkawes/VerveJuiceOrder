@@ -60,7 +60,7 @@
 
         <!-- Order Form Section -->
         <div id="order-form-section">
-            <!-- Updated font size for Verve Juice name -->
+            <!-- Updated font size for VERVE JUICE name -->
             <h1 class="text-3xl font-bold text-center mb-6" style="color: #39531a; font-family: 'Rubik Bubbles', cursive; font-size: 2.5rem;">VERVE JUICE</h1>
 
             <div class="mb-4">
@@ -231,7 +231,7 @@
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
             ];
 
-            // ⚠️ กรุณาเปลี่ยน URL ด้านล่างนี้เป็น webhook ของ n8n ที่คุณสร้างไว้สำหรับ Workflow ใหม่ที่รวม Google Sheet และ Telegram ⚠️
+            // ⚠️ Please change the URL below to the n8n webhook you created for the new Workflow that integrates Google Sheet and Telegram ⚠️
             const n8nWebhookUrl = "https://kornkawes.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
             const menuItemsEl = document.getElementById('menu-items');
@@ -260,6 +260,25 @@
 
             let order = { items: {}, total: 0 };
             
+            // Function to get and manage the order queue number
+            const getOrderQueueNumber = () => {
+                const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+                let lastResetDate = localStorage.getItem('lastResetDate');
+                let queueNumber = parseInt(localStorage.getItem('queueNumber') || '0', 10);
+
+                if (lastResetDate !== today) {
+                    // It's a new day, reset the queue.
+                    queueNumber = 1;
+                    localStorage.setItem('lastResetDate', today);
+                } else {
+                    // It's the same day, increment the queue.
+                    queueNumber++;
+                }
+
+                localStorage.setItem('queueNumber', queueNumber.toString());
+                return queueNumber;
+            };
+
             // Function to show a temporary message box
             const showMessageBox = (message, color) => {
                 const messageBox = document.createElement('div');
@@ -398,8 +417,12 @@
                     showMessageBox('กรุณากรอกชื่อให้ครบถ้วน', 'red');
                     return;
                 }
+                
+                // Get the next queue number
+                const queueNumber = getOrderQueueNumber();
 
                 const finalOrder = {
+                    queueNumber: `#${queueNumber}`, // Add queue number to the order object
                     customerName: customerName,
                     customerContact: {
                         phone: customerPhone,
@@ -410,7 +433,6 @@
                     total: order.total
                 };
                 
-                // ➡️ บันทึกข้อมูลไว้ใน localStorage เท่านั้น ไม่มีการส่งไป n8n ในขั้นตอนนี้
                 localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
                 
                 renderPaymentPage(finalOrder);
@@ -424,7 +446,9 @@
             });
             
             const renderPaymentPage = (finalOrder) => {
-                let summaryHtml = `<p class="text-sm font-bold text-gray-700">ชื่อลูกค้า: ${finalOrder.customerName}</p>`;
+                // Display the queue number in the order summary
+                let summaryHtml = `<p class="text-sm font-bold text-gray-700">คิวที่: ${finalOrder.queueNumber}</p>`;
+                summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">ชื่อลูกค้า: ${finalOrder.customerName}</p>`;
                 summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">ช่องทางการติดต่อ: ${finalOrder.customerContact.phone}</p>`;
                 if (finalOrder.customerContact.other) {
                     summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">ช่องทางติดต่ออื่น: ${finalOrder.customerContact.other}</p>`;
@@ -472,24 +496,24 @@
                 const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
                 const orderTime = new Date().toISOString();
 
-                // 💡 Convert image file to Base64 String to send to n8n
                 const reader = new FileReader();
                 reader.readAsDataURL(slipFile);
                 reader.onloadend = async () => {
                     const base64Slip = reader.result;
 
-                    // ✅ Prepare Payload for n8n
+                    // Prepare Payload for n8n, including the queue number
                     const payload = {
+                        queueNumber: currentOrder.queueNumber,
                         customerName: currentOrder.customerName,
                         customerContact: currentOrder.customerContact,
                         customerNote: currentOrder.customerNote,
                         items: currentOrder.items,
                         total: currentOrder.total,
                         orderTime: orderTime,
-                        paymentSlipUrl: base64Slip // Send Base64 String of the slip image
+                        paymentSlipUrl: base64Slip
                     };
-    
-                    // 🚀 Send data to n8n webhook using fetchWithRetry
+        
+                    // Send data to n8n webhook using fetchWithRetry
                     try {
                         if (n8nWebhookUrl) {
                             await fetchWithRetry(n8nWebhookUrl, {
@@ -497,8 +521,6 @@
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)
                             });
-                            // If fetchWithRetry completes without throwing, it means the request was successful
-                            // ➡️ Show confirmation page
                             paymentSection.classList.add('hidden');
                             confirmationSection.classList.remove('hidden');
                         } else {
@@ -507,7 +529,6 @@
                         }
                     } catch (error) {
                         console.error('Error sending data to n8n:', error);
-                        // More specific message for network/fetch errors
                         showMessageBox('เกิดข้อผิดพลาดในการส่งข้อมูล: กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและ URL ของ n8n', 'red');
                     } finally {
                         uploadSlipBtn.disabled = false;
@@ -546,7 +567,3 @@
     </script>
 </body>
 </html>
-
-
-
-
