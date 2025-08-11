@@ -53,15 +53,18 @@
 
         <!-- Order Form Section -->
         <div id="order-form-section">
-            <h1 class="text-3xl font-bold text-center mb-6" style="color: #39531a; font-family: 'Rubik Bubbles', cursive; font-size: 2.5rem;">VERVE JUICE</h1>
+            <!-- MODIFICATION 1: Replace H1 with Logo Image -->
+            <div class="flex justify-center mb-6">
+                <img src="https://github.com/kornkawes/VerveImage/blob/main/logo2.png?raw=true" alt="Verve Juice Logo" class="w-48">
+            </div>
 
             <div class="mb-4">
-                <label for="customerName" class="block text-gray-700 font-bold mb-2">ชื่อของคุณ</label>
+                <label for="customerName" class="block text-gray-700 font-bold mb-2">ชื่อของคุณ*</label>
                 <input type="text" id="customerName" placeholder="กรุณากรอกชื่อ-นามสกุล" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
             </div>
 
             <div class="mb-4">
-                <label for="customerPhone" class="block text-gray-700 font-bold mb-2">ช่องทางการติดต่อ</label>
+                <label for="customerPhone" class="block text-gray-700 font-bold mb-2">ช่องทางการติดต่อ*</label>
                 <input type="tel" id="customerPhone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 mb-2">
                 <div class="flex space-x-2">
                     <input type="text" id="contactApp" placeholder="ชื่อแอป เช่น Line" class="w-1/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
@@ -70,7 +73,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
+                <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ*</label>
                 <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
             </div>
 
@@ -280,6 +283,7 @@
                     const allergyNote = order.items[item.id] ? order.items[item.id].allergyNote : '';
                     const hasAllergy = allergyNote !== '';
 
+                    // MODIFICATION 2: Move button container to the bottom
                     const itemHtml = `
                         <div class="p-4 bg-gray-50 rounded-xl card flex items-center space-x-4">
                             <img src="${item.imageUrl}" alt="${item.name}" class="w-32 h-32 rounded-lg object-cover flex-shrink-0">
@@ -291,11 +295,7 @@
                                         <p class="text-xs text-gray-400 mt-1"><span class="font-bold">ส่วนผสม:</span> ${item.ingredients}</p>
                                         <p class="text-xs text-gray-400 mt-1"><span class="font-bold">สรรพคุณ:</span> ${item.properties}</p>
                                     </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-emerald-400 hover:bg-emerald-500 transition-colors rounded-full">-</button>
-                                        <input type="number" data-id="${item.id}" class="w-12 text-center border-none bg-transparent font-bold focus:outline-none" value="${quantity}" min="0" readonly>
-                                        <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-full">+</button>
-                                    </div>
+                                    <!-- Button container removed from here -->
                                 </div>
 
                                 <div class="mt-2 text-sm text-gray-700">
@@ -309,6 +309,13 @@
                                             หมายเหตุ: รสชาติอาจแตกต่างจากสูตรปกติเนื่องจากมีการปรับเปลี่ยนส่วนผสม
                                         </p>
                                     </div>
+                                </div>
+                                
+                                <!-- Button container added here -->
+                                <div class="flex items-center justify-center space-x-2 mt-4">
+                                    <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-emerald-400 hover:bg-emerald-500 transition-colors rounded-full">-</button>
+                                    <input type="number" data-id="${item.id}" class="w-12 text-center border-none bg-transparent font-bold focus:outline-none" value="${quantity}" min="0" readonly>
+                                    <button data-id="${item.id}" data-action="plus" class="btn-plus-minus bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-full">+</button>
                                 </div>
                             </div>
                         </div>
@@ -364,7 +371,6 @@
                         other: contactApp && contactId ? `${contactApp}: ${contactId}` : ''
                     },
                     customerNote: customerNote,
-                    // ✅ ADDITION: Add orderDate to the order object
                     orderDate: new Date().toISOString(),
                     items: Object.values(order.items).filter(item => item.quantity > 0),
                     total: order.total
@@ -382,7 +388,6 @@
             });
             
             const renderPaymentPage = (finalOrder) => {
-                // ✅ ADDITION: Format and display the order date
                 const displayDate = new Date(finalOrder.orderDate).toLocaleString('th-TH', {
                     year: 'numeric',
                     month: 'long',
@@ -393,7 +398,7 @@
                 });
 
                 let summaryHtml = `<p class="text-sm font-bold text-gray-700">คิวที่: ${finalOrder.queueNumber}</p>`;
-                summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">วันที่สั่ง: ${displayDate}</p>`; // Display the formatted date
+                summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">วันที่สั่ง: ${displayDate}</p>`;
                 summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">ชื่อลูกค้า: ${finalOrder.customerName}</p>`;
                 summaryHtml += `<p class="text-sm font-bold text-gray-700 mt-2">ช่องทางการติดต่อ: ${finalOrder.customerContact.phone}</p>`;
                 if (finalOrder.customerContact.other) {
@@ -452,18 +457,13 @@
                 const formData = new FormData();
 
                 formData.append('slipImage', slipFile);
-
                 formData.append('queueNumber', currentOrder.queueNumber);
                 formData.append('customerName', currentOrder.customerName);
                 formData.append('customerNote', currentOrder.customerNote);
                 formData.append('total', currentOrder.total);
-                
-                // ✅ MODIFICATION: Use the stored orderDate
                 formData.append('orderDate', currentOrder.orderDate);
-                
                 formData.append('customerPhone', currentOrder.customerContact.phone);
                 formData.append('customerContactOther', currentOrder.customerContact.other);
-                
                 formData.append('items', JSON.stringify(currentOrder.items));
         
                 try {
