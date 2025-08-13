@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verve Juice Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ADDED: Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@400;700&family=Rubik+Bubbles&family=Noto+Sans+Thai:wght@400;700&display=swap');
+        
+        /* MODIFICATION: Swapped gradient colors */
         body {
             font-family: 'Noto Sans Thai', sans-serif;
-            background-color: #f7f3e9;
+            background: linear-gradient(135deg, #86efac, #fde047);
         }
         .cute-font {
             font-family: 'Kanit', sans-serif;
@@ -47,15 +51,21 @@
         }
     </style>
 </head>
-<body class="bg-emerald-50 flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="container bg-white p-6 rounded-3xl shadow-xl w-full max-w-lg transition-all duration-300">
+    <!-- MODIFICATION: Changed container style to be transparent with backdrop blur -->
+    <div class="container bg-white/30 backdrop-blur-xl p-6 rounded-3xl shadow-2xl w-full max-w-lg transition-all duration-300">
 
         <!-- Order Form Section -->
         <div id="order-form-section">
-            <!-- MODIFICATION 1: Replace H1 with Logo Image -->
             <div class="flex justify-center mb-6">
                 <img src="https://github.com/kornkawes/VerveImage/blob/main/logo2.png?raw=true" alt="Verve Juice Logo" class="w-48">
+            </div>
+
+            <!-- ADDED: Social Media Icons -->
+            <div class="flex justify-center space-x-6 mb-6 text-2xl text-gray-800">
+                <a href="https://www.tiktok.com/@vervejuice.th" class="hover:text-emerald-600" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/vervejuice.th" class="hover:text-emerald-600" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
             </div>
 
             <div class="mb-4">
@@ -150,7 +160,7 @@
 
         <!-- Confirmation Section -->
         <div id="confirmation-section" class="hidden text-center">
-            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0-0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <h1 class="text-3xl font-bold text-center mt-4 text-emerald-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
             <p class="mt-2 text-gray-600">เราได้รับสลิปการโอนเงินเรียบร้อยแล้ว จะรีบตรวจสอบและจัดเตรียมน้ำผลไม้ให้คุณค่ะ</p>
             <button onclick="window.location.reload()" class="mt-6 bg-gray-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-gray-500 transition-colors">
@@ -283,7 +293,6 @@
                     const allergyNote = order.items[item.id] ? order.items[item.id].allergyNote : '';
                     const hasAllergy = allergyNote !== '';
 
-                    // MODIFICATION 2: Move button container to the bottom
                     const itemHtml = `
                         <div class="p-4 bg-gray-50 rounded-xl card flex items-center space-x-4">
                             <img src="${item.imageUrl}" alt="${item.name}" class="w-32 h-32 rounded-lg object-cover flex-shrink-0">
@@ -295,7 +304,6 @@
                                         <p class="text-xs text-gray-400 mt-1"><span class="font-bold">ส่วนผสม:</span> ${item.ingredients}</p>
                                         <p class="text-xs text-gray-400 mt-1"><span class="font-bold">สรรพคุณ:</span> ${item.properties}</p>
                                     </div>
-                                    <!-- Button container removed from here -->
                                 </div>
 
                                 <div class="mt-2 text-sm text-gray-700">
@@ -311,7 +319,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Button container added here -->
                                 <div class="flex items-center justify-center space-x-2 mt-4">
                                     <button data-id="${item.id}" data-action="minus" class="btn-plus-minus bg-emerald-400 hover:bg-emerald-500 transition-colors rounded-full">-</button>
                                     <input type="number" data-id="${item.id}" class="w-12 text-center border-none bg-transparent font-bold focus:outline-none" value="${quantity}" min="0" readonly>
@@ -491,5 +498,3 @@
     </script>
 </body>
 </html>
-
-
