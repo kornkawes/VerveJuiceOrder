@@ -160,7 +160,7 @@
 
         <!-- Confirmation Section -->
         <div id="confirmation-section" class="hidden text-center">
-            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0-0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <h1 class="text-3xl font-bold text-center mt-4 text-emerald-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
             <p class="mt-2 text-gray-600">เราได้รับสลิปการโอนเงินเรียบร้อยแล้ว จะรีบตรวจสอบและจัดเตรียมน้ำผลไม้ให้คุณค่ะ</p>
             <button onclick="window.location.reload()" class="mt-6 bg-gray-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-gray-500 transition-colors">
@@ -217,19 +217,16 @@
                 setTimeout(() => { messageBox.remove(); }, 3000);
             };
 
+            // --- MODIFICATION START: Changed queue number generation to a 3-character random code ---
             const getOrderQueueNumber = () => {
-                const today = new Date().toISOString().slice(0, 10);
-                let lastResetDate = localStorage.getItem('lastResetDate');
-                let queueNumber = parseInt(localStorage.getItem('queueNumber') || '0', 10);
-                if (lastResetDate !== today) {
-                    queueNumber = 1;
-                    localStorage.setItem('lastResetDate', today);
-                } else {
-                    queueNumber++;
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 3; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
-                localStorage.setItem('queueNumber', queueNumber.toString());
-                return queueNumber;
+                return result;
             };
+            // --- MODIFICATION END ---
 
             async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
                 for (let i = 0; i < retries; i++) {
@@ -498,7 +495,3 @@
     </script>
 </body>
 </html>
-
-
-
-
