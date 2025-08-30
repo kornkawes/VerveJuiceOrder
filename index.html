@@ -91,11 +91,33 @@
             <div id="menu-items" class="space-y-4">
                 <!-- Menu items will be rendered here by JavaScript -->
             </div>
-
-            <div class="mt-6 p-4 bg-emerald-100 rounded-2xl flex justify-between items-center">
-                <span class="text-lg font-bold text-gray-800">ราคารวม:</span>
-                <span id="total-price" class="text-2xl font-extrabold text-emerald-600">฿0</span>
+            
+            <!-- ADDED: Discount Code Section -->
+            <div class="mt-6">
+                <label for="discountCode" class="block text-gray-700 font-bold mb-2">โค้ดส่วนลด</label>
+                <div class="flex space-x-2">
+                    <input type="text" id="discountCode" placeholder="กรอกโค้ดส่วนลด" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300">
+                    <button id="apply-discount-btn" class="px-4 py-2 bg-gray-600 text-white font-bold rounded-xl hover:bg-gray-700 transition-colors">ใช้</button>
+                </div>
+                <p id="discount-info" class="text-sm mt-2 h-5"></p> <!-- For messages -->
             </div>
+
+            <!-- MODIFIED: Total Summary Section -->
+            <div id="total-summary-section" class="mt-4 p-4 bg-emerald-100 rounded-2xl space-y-2">
+                 <div class="flex justify-between items-center text-gray-700">
+                    <span>ยอดรวม</span>
+                    <span id="subtotal-price">฿0</span>
+                </div>
+                 <div id="discount-display-section" class="flex justify-between items-center text-red-500 hidden">
+                    <span>ส่วนลด (<span id="discount-code-display"></span>)</span>
+                    <span id="discount-amount">-฿0</span>
+                </div>
+                 <div class="flex justify-between items-center text-gray-800 border-t pt-2 mt-2">
+                    <span class="text-lg font-bold">ยอดสุทธิ</span>
+                    <span id="total-price" class="text-2xl font-extrabold text-emerald-600">฿0</span>
+                </div>
+            </div>
+
 
             <button id="confirm-order-btn" class="w-full mt-6 bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-emerald-700 transition-colors">
                 ยืนยันการสั่งซื้อ
@@ -162,7 +184,7 @@
         <div id="confirmation-section" class="hidden text-center">
             <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <h1 class="text-3xl font-bold text-center mt-4 text-emerald-600 cute-font">ขอบคุณสำหรับคำสั่งซื้อ!</h1>
-            <p class="mt-2 text-gray-600">หลังจากตรวจสอบสลิปแล้ว จะเริ่มดำเนินการออเดอร์ให้ทันทีครับ</p>
+            <p class="mt-2 text-gray-600">หลังจากตรวจสอบสลิปแล้ว จะเริ่มจัดเตรียมคำสั่งซื้อให้ทันทีครับ</p>
             <p class="text-center text-red-600 text-xs mb-4">(กรุณาบันทึกภาพหน้าจอนี้ไว้เป็นหลักฐานคำสั่งซื้อ)</p>
 
             <div id="final-order-summary" class="mt-6 text-left p-4 bg-gray-50 rounded-2xl border border-emerald-200">
@@ -188,17 +210,36 @@
                 { id: 'smart-sip', name: 'Smart Sip', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'สรรพคุณ: ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true' },
                 { id: 'recharge-me', name: 'Recharge Me', price: 60, unit: 'ขวด', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'สรรพคุณ: กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
             ];
+
+            // type: 'fixed' (บาท) หรือ 'percent' (%)
+            // expiryDate: 'YYYY-MM-DD' (ปี ค.ศ.)
+            const discountCodes = [
+              {
+                code: "SUCHATANDSOMPOP",
+                type: "percent",
+                value: 15,
+                expiryDate: "2025-12-31", 
+                minSpend: 0,
+                minItems: 5
+              },
+              {
+                code: "VERVETIKTOK",
+                type: "percent",
+                value: 10,
+                expiryDate: "2025-10-15",
+                minSpend: 0,
+                minItems: 3
+              }
+            ];
             
             const n8nWebhookUrl = "https://vervejuice.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
+            // Element declarations
             const menuItemsEl = document.getElementById('menu-items');
-            const totalPriceEl = document.getElementById('total-price');
             const confirmOrderBtn = document.getElementById('confirm-order-btn');
             const orderFormSection = document.getElementById('order-form-section');
             const paymentSection = document.getElementById('payment-section');
             const confirmationSection = document.getElementById('confirmation-section');
-            const paymentTotalEl = document.getElementById('payment-total');
-            const orderSummaryEl = document.getElementById('order-summary');
             const slipUploadEl = document.getElementById('slipUpload');
             const customerNameEl = document.getElementById('customerName');
             const customerPhoneEl = document.getElementById('customerPhone');
@@ -213,8 +254,23 @@
             const uploadSlipTextEl = document.getElementById('upload-slip-text');
             const uploadSlipSpinnerEl = document.getElementById('upload-slip-spinner');
             const finalOrderSummaryEl = document.getElementById('final-order-summary');
+            const orderSummaryEl = document.getElementById('order-summary');
+            const paymentTotalEl = document.getElementById('payment-total');
+            
+            // Price display elements
+            const subtotalPriceEl = document.getElementById('subtotal-price');
+            const discountAmountEl = document.getElementById('discount-amount');
+            const totalPriceEl = document.getElementById('total-price');
+            const discountDisplaySectionEl = document.getElementById('discount-display-section');
+            const discountCodeDisplayEl = document.getElementById('discount-code-display');
 
-            let order = { items: {}, total: 0 };
+            // Discount code elements
+            const discountCodeInputEl = document.getElementById('discountCode');
+            const applyDiscountBtnEl = document.getElementById('apply-discount-btn');
+            const discountInfoEl = document.getElementById('discount-info');
+
+
+            let order = { items: {}, total: 0, subtotal: 0, discount: null };
             
             window.showMessageBox = (message, color) => {
                 const messageBox = document.createElement('div');
@@ -277,15 +333,41 @@
             };
 
             const updateTotal = () => {
-                let total = 0;
+                let subtotal = 0;
+                let totalItems = 0;
                 for (const itemId in order.items) {
                     if (order.items[itemId].quantity > 0) {
                         const item = menu.find(i => i.id === itemId);
-                        total += (item ? item.price : 0) * order.items[itemId].quantity;
+                        subtotal += (item ? item.price : 0) * order.items[itemId].quantity;
+                        totalItems += order.items[itemId].quantity;
                     }
                 }
+                order.subtotal = subtotal;
+                order.totalItems = totalItems;
+
+                let discountValue = 0;
+                if(order.discount) {
+                    if(order.discount.type === 'fixed') {
+                        discountValue = order.discount.value;
+                    } else if (order.discount.type === 'percent') {
+                        discountValue = (subtotal * order.discount.value) / 100;
+                    }
+                }
+                
+                let total = subtotal - discountValue;
+                if (total < 0) total = 0;
                 order.total = total;
-                totalPriceEl.textContent = `฿${total}`;
+
+                // Update UI
+                subtotalPriceEl.textContent = `฿${subtotal}`;
+                if(order.discount) {
+                    discountAmountEl.textContent = `-฿${discountValue.toFixed(2)}`;
+                    discountCodeDisplayEl.textContent = order.discount.code;
+                    discountDisplaySectionEl.classList.remove('hidden');
+                } else {
+                    discountDisplaySectionEl.classList.add('hidden');
+                }
+                totalPriceEl.textContent = `฿${total.toFixed(2)}`;
             };
             
             const renderMenu = () => {
@@ -335,17 +417,16 @@
 
             menuItemsEl.addEventListener('click', (e) => {
                 const button = e.target.closest('button');
-                if (!button) return;
+                if (!button || !button.dataset.action) return;
 
                 const itemId = button.dataset.id;
-                const action = button.dataset.action;
                 if (!order.items[itemId]) {
                     order.items[itemId] = { ...menu.find(item => item.id === itemId), quantity: 0, allergyNote: '' };
                 }
 
-                if (action === 'plus') {
+                if (button.dataset.action === 'plus') {
                     order.items[itemId].quantity++;
-                } else if (action === 'minus' && order.items[itemId].quantity > 0) {
+                } else if (button.dataset.action === 'minus' && order.items[itemId].quantity > 0) {
                     order.items[itemId].quantity--;
                 }
 
@@ -357,9 +438,64 @@
                 if (inputEl) {
                     inputEl.value = order.items[itemId] ? order.items[itemId].quantity : 0;
                 }
-
                 updateTotal();
             });
+
+            applyDiscountBtnEl.addEventListener('click', () => {
+                const code = discountCodeInputEl.value.trim().toUpperCase();
+                if (!code) {
+                    order.discount = null;
+                    discountInfoEl.textContent = '';
+                    updateTotal();
+                    return;
+                }
+
+                const foundCode = discountCodes.find(c => c.code === code);
+
+                if (!foundCode) {
+                    order.discount = null;
+                    discountInfoEl.textContent = 'โค้ดส่วนลดไม่ถูกต้อง';
+                    discountInfoEl.className = 'text-sm mt-2 h-5 text-red-500';
+                    updateTotal();
+                    return;
+                }
+
+                const today = new Date();
+                const expiry = new Date(foundCode.expiryDate);
+                today.setHours(0,0,0,0);
+                expiry.setHours(23,59,59,999);
+
+
+                if (today > expiry) {
+                    order.discount = null;
+                    discountInfoEl.textContent = 'โค้ดนี้หมดอายุแล้ว';
+                    discountInfoEl.className = 'text-sm mt-2 h-5 text-red-500';
+                    updateTotal();
+                    return;
+                }
+                
+                if (order.subtotal < foundCode.minSpend) {
+                    order.discount = null;
+                    discountInfoEl.textContent = `ต้องมียอดสั่งซื้อขั้นต่ำ ฿${foundCode.minSpend}`;
+                    discountInfoEl.className = 'text-sm mt-2 h-5 text-red-500';
+                    updateTotal();
+                    return;
+                }
+
+                if (order.totalItems < foundCode.minItems) {
+                    order.discount = null;
+                    discountInfoEl.textContent = `ต้องสั่งซื้อขั้นต่ำ ${foundCode.minItems} ขวด`;
+                    discountInfoEl.className = 'text-sm mt-2 h-5 text-red-500';
+                    updateTotal();
+                    return;
+                }
+
+                order.discount = foundCode;
+                discountInfoEl.textContent = 'ใช้โค้ดส่วนลดสำเร็จ!';
+                discountInfoEl.className = 'text-sm mt-2 h-5 text-green-600';
+                updateTotal();
+            });
+
 
             confirmOrderBtn.addEventListener('click', async () => {
                 const customerName = customerNameEl.value.trim();
@@ -382,7 +518,10 @@
                     customerNote: customerNote,
                     orderDate: new Date().toISOString(),
                     items: Object.values(order.items).filter(item => item.quantity > 0),
-                    total: order.total
+                    subtotal: order.subtotal,
+                    discount: order.discount,
+                    total: order.total,
+                    totalItems: order.totalItems
                 };
                 
                 localStorage.setItem('currentOrder', JSON.stringify(finalOrder));
@@ -398,12 +537,8 @@
             
             const renderPaymentPage = (finalOrder) => {
                 const displayDate = new Date(finalOrder.orderDate).toLocaleString('th-TH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZone: 'Asia/Bangkok'
+                    year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Bangkok'
                 });
 
                 let summaryHtml = `<p class="text-sm font-bold text-gray-700">Order ID: ${finalOrder.queueNumber}</p>`;
@@ -423,8 +558,17 @@
                         summaryHtml += `<p class="ml-4 text-xs text-red-500">หมายเหตุแพ้อาหาร: ${item.allergyNote}</p>`;
                     }
                 });
+
+                summaryHtml += `<div class="mt-2 pt-2 border-t">`;
+                summaryHtml += `<p class="text-sm text-right text-gray-600">ยอดรวม: ฿${finalOrder.subtotal.toFixed(2)}</p>`;
+                if(finalOrder.discount){
+                    const discountAmount = finalOrder.discount.type === 'fixed' ? finalOrder.discount.value : (finalOrder.subtotal * finalOrder.discount.value) / 100;
+                    summaryHtml += `<p class="text-sm text-right text-red-500">ส่วนลด (${finalOrder.discount.code}): -฿${discountAmount.toFixed(2)}</p>`;
+                }
+                summaryHtml += `</div>`;
+
                 orderSummaryEl.innerHTML = summaryHtml;
-                paymentTotalEl.textContent = `฿${finalOrder.total}`;
+                paymentTotalEl.textContent = `฿${finalOrder.total.toFixed(2)}`;
             };
             
             slipUploadEl.addEventListener('change', (event) => {
@@ -469,7 +613,9 @@
                 formData.append('queueNumber', currentOrder.queueNumber);
                 formData.append('customerName', currentOrder.customerName);
                 formData.append('customerNote', currentOrder.customerNote);
+                formData.append('subtotal', currentOrder.subtotal);
                 formData.append('total', currentOrder.total);
+                formData.append('discount', currentOrder.discount ? JSON.stringify(currentOrder.discount) : '');
                 formData.append('orderDate', currentOrder.orderDate);
                 formData.append('customerPhone', currentOrder.customerContact.phone);
                 formData.append('customerContactOther', currentOrder.customerContact.other);
@@ -505,10 +651,18 @@
                             summaryHtml += `<p class="ml-4 text-xs text-red-500">หมายเหตุแพ้อาหาร: ${item.allergyNote}</p>`;
                         }
                     });
-                    summaryHtml += `<div class="mt-4 pt-4 border-t border-emerald-200 flex justify-between items-center">
-                        <span class="font-bold text-gray-800">ยอดรวมสุทธิ:</span>
-                        <span class="text-xl font-extrabold text-emerald-600">฿${currentOrder.total}</span>
+                    summaryHtml += `<div class="mt-4 pt-4 border-t border-emerald-200">`;
+                    summaryHtml += `<p class="text-sm text-right text-gray-600">ยอดรวม: ฿${currentOrder.subtotal.toFixed(2)}</p>`;
+                    if(currentOrder.discount){
+                        const discountAmount = currentOrder.discount.type === 'fixed' ? currentOrder.discount.value : (currentOrder.subtotal * currentOrder.discount.value) / 100;
+                         summaryHtml += `<p class="text-sm text-right text-red-500">ส่วนลด (${currentOrder.discount.code}): -฿${discountAmount.toFixed(2)}</p>`;
+                    }
+                    summaryHtml += `<div class="flex justify-between items-center mt-1">
+                        <span class="font-bold text-gray-800">ยอดสุทธิ:</span>
+                        <span class="text-xl font-extrabold text-emerald-600">฿${currentOrder.total.toFixed(2)}</span>
                     </div>`;
+                    summaryHtml += `</div>`;
+
                     finalOrderSummaryEl.innerHTML = summaryHtml;
 
                 } catch (error) {
@@ -523,6 +677,7 @@
 
             // Initial render
             renderMenu();
+            updateTotal();
         });
     </script>
 </body>
