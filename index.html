@@ -504,6 +504,11 @@
                 const contactId = contactIdEl.value.trim();
                 const customerNote = customerNoteEl.value.trim();
 
+                // ADDED: Check minimum items for discount code
+                if (order.discount && order.totalItems < order.discount.minItems) {
+                    return showMessageBox(`กรุณาสั่งสินค้าอย่างน้อย ${order.discount.minItems} ขวด เพื่อใช้โค้ดส่วนลดนี้`, 'red');
+                }
+                
                 if (!customerName) return showMessageBox('กรุณากรอกชื่อให้ครบถ้วน', 'red');
                 if (!/^\d{10}$/.test(customerPhone)) return showMessageBox('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)', 'red');
                 if (Object.keys(order.items).length === 0) return showMessageBox('กรุณาเลือกเมนูอย่างน้อย 1 รายการ', 'red');
@@ -682,6 +687,3 @@
     </script>
 </body>
 </html>
-
-
-
