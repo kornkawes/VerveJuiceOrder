@@ -61,9 +61,11 @@
             </a>
         </div>
 
+        <!-- MOVED: Menu section is now at the top -->
         <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">เมนู</h2>
         <div id="menu-items" class="space-y-4"></div>
         <hr class="my-8 border-gray-300">
+        <!-- END MOVE -->
 
         <div class="mb-4">
             <label for="customerName" class="block text-gray-700 font-bold mb-2">
@@ -78,13 +80,7 @@
                 ช่องทางการติดต่อ*
             </label>
             <input id="customerPhone" type="tel" placeholder="เบอร์โทรศัพท์ (10 หลัก)"
-                   class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 mb-2" />
-            <div class="flex space-x-2">
-                <input id="contactApp" type="text" placeholder="Line,Instagram"
-                       class="w-1/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
-                <input id="contactId" type="text" placeholder="@vervejuice (ไม่บังคับ)"
-                       class="w-2/3 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
-            </div>
+                   class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
         </div>
 
         <div class="mb-4">
@@ -263,8 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const slipUploadEl = document.getElementById('slipUpload');
     const customerNameEl = document.getElementById('customerName');
     const customerPhoneEl = document.getElementById('customerPhone');
-    const contactAppEl = document.getElementById('contactApp');
-    const contactIdEl = document.getElementById('contactId');
     const customerNoteEl = document.getElementById('customerNote');
     const copyAccountBtn = document.getElementById('copy-account-btn');
     const slipPreviewContainerEl = document.getElementById('slip-preview-container');
@@ -522,7 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ['ชื่อลูกค้า', data.customerName],
             ['ช่องทางการติดต่อ', data.customerContact.phone]
         ];
-        if(data.customerContact.other) fields.push(['ช่องทางติดต่ออื่น', data.customerContact.other]);
         if(data.customerNote) fields.push(['หมายเหตุ', data.customerNote]);
 
         fields.forEach(([label,value],idx)=>{
@@ -587,8 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmOrderBtn.addEventListener('click', () => {
         const name = customerNameEl.value.trim();
         const phone = customerPhoneEl.value.trim();
-        const app = contactAppEl.value.trim();
-        const appId = contactIdEl.value.trim();
         const note = customerNoteEl.value.trim();
 
         if(!name) return showMessageBox('กรุณากรอกชื่อให้ครบถ้วน','red');
@@ -599,8 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
             queueNumber: getOrderQueueNumber(),
             customerName: name,
             customerContact: {
-                phone: phone,
-                other: app && appId ? `${app}: ${appId}` : ''
+                phone: phone
             },
             customerNote: note,
             orderDate: new Date().toISOString(),
@@ -664,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('discount', currentOrder.discount ? JSON.stringify(currentOrder.discount) : '');
         formData.append('orderDate', currentOrder.orderDate);
         formData.append('customerPhone', currentOrder.customerContact.phone);
-        formData.append('customerContactOther', currentOrder.customerContact.other);
         formData.append('items', JSON.stringify(currentOrder.items));
 
         try {
@@ -688,4 +677,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
