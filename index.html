@@ -53,13 +53,17 @@
         <div class="flex justify-center space-x-6 mb-6 text-2xl text-gray-800">
             <a href="https://www.tiktok.com/@vervejuice.th"
                class="hover:text-emerald-600" target="_blank" aria-label="TikTok">
-               <i class="fa-brands fa-tiktok"></i>
+                <i class="fa-brands fa-tiktok"></i>
             </a>
             <a href="https://www.instagram.com/vervejuice.th"
                class="hover:text-emerald-600" target="_blank" aria-label="Instagram">
-               <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-instagram"></i>
             </a>
         </div>
+
+        <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">เมนู</h2>
+        <div id="menu-items" class="space-y-4"></div>
+        <hr class="my-8 border-gray-300">
 
         <div class="mb-4">
             <label for="customerName" class="block text-gray-700 font-bold mb-2">
@@ -84,13 +88,10 @@
         </div>
 
         <div class="mb-4">
-            <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ*</label>
+            <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
             <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน"
                       class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
         </div>
-
-        <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">เมนู</h2>
-        <div id="menu-items" class="space-y-4"></div>
 
         <!-- Discount Section -->
         <div class="mt-6">
@@ -234,15 +235,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const menu = [
-                { id: 'apple-kiss', name: 'Apple Kiss', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true' },
-                { id: 'blush-bloom', name: 'Blush Bloom', price: 70, unit: 'ขวด (200ml)', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true' },
-                { id: 'happy-tummy', name: 'Happy Tummy', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true' },
-                { id: 'hearty-green', name: 'Hearty Green', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true' },
-                { id: 'sweet-detox', name: 'Sweet Detox', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true' },
-                { id: 'beet-love', name: 'Beet Love', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true' },
-                { id: 'smart-sip', name: 'Smart Sip', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true' },
-                { id: 'recharge-me', name: 'Recharge Me', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
-            ]
+        { id: 'apple-kiss', name: 'Apple Kiss', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true' },
+        { id: 'blush-bloom', name: 'Blush Bloom', price: 70, unit: 'ขวด (200ml)', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true' },
+        { id: 'happy-tummy', name: 'Happy Tummy', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true' },
+        { id: 'hearty-green', name: 'Hearty Green', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true' },
+        { id: 'sweet-detox', name: 'Sweet Detox', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true' },
+        { id: 'beet-love', name: 'Beet Love', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true' },
+        { id: 'smart-sip', name: 'Smart Sip', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, คะน้า, สับปะรด', properties: 'ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true' },
+        { id: 'recharge-me', name: 'Recharge Me', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
+    ];
 
     const discountCodes = [
         { code:"SUCHATANDSOMPOP", type:"percent", value:15,
@@ -687,8 +688,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
-
-
-
 
