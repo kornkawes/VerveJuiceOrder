@@ -53,20 +53,19 @@
         <div class="flex justify-center space-x-6 mb-6 text-2xl text-gray-800">
             <a href="https://www.tiktok.com/@vervejuice.th"
                class="hover:text-emerald-600" target="_blank" aria-label="TikTok">
-                <i class="fa-brands fa-tiktok"></i>
+               <i class="fa-brands fa-tiktok"></i>
             </a>
             <a href="https://www.instagram.com/vervejuice.th"
                class="hover:text-emerald-600" target="_blank" aria-label="Instagram">
-                <i class="fa-brands fa-instagram"></i>
+               <i class="fa-brands fa-instagram"></i>
             </a>
         </div>
 
-        <!-- MOVED: Menu section is now at the top -->
         <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">เมนู</h2>
         <div id="menu-items" class="space-y-4"></div>
         <hr class="my-8 border-gray-300">
-        <!-- END MOVE -->
-
+        
+        <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">ข้อมูลการจัดส่ง</h2>
         <div class="mb-4">
             <label for="customerName" class="block text-gray-700 font-bold mb-2">
                 ชื่อของคุณ*
@@ -77,17 +76,27 @@
 
         <div class="mb-4">
             <label for="customerPhone" class="block text-gray-700 font-bold mb-2">
-                ช่องทางการติดต่อ*
+                เบอร์โทรศัพท์*
             </label>
             <input id="customerPhone" type="tel" placeholder="เบอร์โทรศัพท์ (10 หลัก)"
                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
         </div>
 
+        <!-- MODIFIED: Delivery Date Selection with Checkboxes -->
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">เลือกวันจัดส่ง (เลือกได้หลายวัน)*</label>
+            <div id="delivery-dates-container" class="space-y-2 p-3 bg-white rounded-xl border">
+                <!-- Checkboxes will be populated by JavaScript -->
+            </div>
+        </div>
+
+
         <div class="mb-4">
             <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
-            <textarea id="customerNote" placeholder="เช่น สะดวกรับวันไหน"
+            <textarea id="customerNote" placeholder="เช่น มารับเอง,ใส่ตู้เย็นเก็บไว้"
                       class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
         </div>
+
 
         <!-- Discount Section -->
         <div class="mt-6">
@@ -230,6 +239,16 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- CONFIGURATION ---
+
+    // ⭐️ เพิ่ม/ลบ วันที่จัดส่งได้ที่นี่ (รูปแบบ: ปี-เดือน-วัน ค.ศ.) ⭐️
+    const deliveryDates = [
+        '2025-09-20',
+        '2025-09-27',
+        '2025-10-04',
+        '2025-10-11'
+    ];
+
     const menu = [
         { id: 'apple-kiss', name: 'Apple Kiss', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true' },
         { id: 'blush-bloom', name: 'Blush Bloom', price: 70, unit: 'ขวด (200ml)', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true' },
@@ -245,12 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
         { code:"SUCHATANDSOMPOP", type:"percent", value:15,
           expiryDate:"2025-12-31", minSpend:0, minItems:5 },
         { code:"VERVETIKTOK", type:"percent", value:10,
-          expiryDate:"2025-10-15", minSpend:0, minItems:3 }
+          expiryDate:"2025-9-30", minSpend:0, minItems:3 }
     ];
 
-    const n8nWebhookUrl = "https://verve2.app.n8n.cloud/webhook/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
+    const n8nWebhookUrl = "https://verve2.app.n8n.cloud/webhook-test/3292a5c3-0f7f-424f-92f8-7dc42f51d763";
 
-    // Elements
+    // --- ELEMENT SELECTORS ---
     const menuItemsEl = document.getElementById('menu-items');
     const confirmOrderBtn = document.getElementById('confirm-order-btn');
     const orderFormSection = document.getElementById('order-form-section');
@@ -278,9 +297,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const discountCodeInputEl = document.getElementById('discountCode');
     const applyDiscountBtnEl = document.getElementById('apply-discount-btn');
     const discountInfoEl = document.getElementById('discount-info');
+    // MODIFIED: Delivery date container element
+    const deliveryDatesContainerEl = document.getElementById('delivery-dates-container');
 
     let order = { items:{}, total:0, subtotal:0, discount:null, totalItems:0 };
 
+    // --- HELPER FUNCTIONS ---
     window.showMessageBox = (message, color) => {
         const colorMap = { red:'bg-red-500', green:'bg-green-500' };
         const box = document.createElement('div');
@@ -312,6 +334,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+    
+    // MODIFIED: Function to render delivery dates as checkboxes
+    const renderDeliveryDates = () => {
+        deliveryDatesContainerEl.innerHTML = '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        deliveryDates.forEach(dateString => {
+            const deliveryDate = new Date(dateString + 'T00:00:00');
+            if (deliveryDate >= today) {
+                const formattedDate = deliveryDate.toLocaleDateString('th-TH', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                });
+                const checkboxId = `date-${dateString}`;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex items-center';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.id = checkboxId;
+                input.name = 'deliveryDate';
+                input.value = dateString;
+                input.className = 'h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500';
+                const label = document.createElement('label');
+                label.htmlFor = checkboxId;
+                label.textContent = formattedDate;
+                label.className = 'ml-3 block text-sm text-gray-900';
+                wrapper.append(input, label);
+                deliveryDatesContainerEl.appendChild(wrapper);
+            }
+        });
+    };
 
     window.toggleAllergyInput = checkbox => {
         const id = checkbox.dataset.id;
@@ -436,6 +489,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const renderOrderSummary = (container, data, includeTotal) => {
+        container.innerHTML = '';
+        const displayDate = new Date(data.orderDate).toLocaleString('th-TH',{
+            year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',
+            timeZone:'Asia/Bangkok'
+        });
+        
+        // MODIFIED: Format multiple delivery dates for display
+        const formattedDeliveryDates = data.deliveryDates.map(dateString => {
+            return new Date(dateString + 'T00:00:00').toLocaleDateString('th-TH', {
+                weekday: 'short', day: 'numeric', month: 'short'
+            });
+        }).join(', ');
+
+        const fields = [
+            ['Order ID', data.queueNumber],
+            ['วันที่สั่ง', displayDate],
+            ['วันจัดส่ง', formattedDeliveryDates], // MODIFIED: Display multiple delivery dates
+            ['ชื่อลูกค้า', data.customerName],
+            ['เบอร์โทรศัพท์', data.customerContact.phone]
+        ];
+        if(data.customerNote) fields.push(['หมายเหตุ', data.customerNote]);
+
+        fields.forEach(([label,value],idx)=>{
+            const p = document.createElement('p');
+            p.className = `text-sm font-bold text-gray-700${idx===0?'':' mt-2'}`;
+            p.innerHTML = `<span class="font-bold">${label}:</span> ${value}`;
+            container.appendChild(p);
+        });
+
+        const listDiv = document.createElement('div');
+        listDiv.className = 'mt-4';
+        const h4 = document.createElement('h4');
+        h4.className = 'font-bold';
+        h4.textContent = 'รายการสั่งซื้อ:';
+        listDiv.appendChild(h4);
+        data.items.forEach(item=>{
+            const p = document.createElement('p');
+            p.className = 'text-sm text-gray-600 ml-2';
+            p.textContent = `- ${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})`;
+            listDiv.appendChild(p);
+            if(item.allergyNote){
+                const ap = document.createElement('p');
+                ap.className = 'ml-6 text-xs text-red-500';
+                ap.textContent = `หมายเหตุแพ้อาหาร: ${item.allergyNote}`;
+                listDiv.appendChild(ap);
+            }
+        });
+        container.appendChild(listDiv);
+
+        const totalsDiv = document.createElement('div');
+        totalsDiv.className = 'mt-2 pt-2 border-t';
+        const subP = document.createElement('p');
+        subP.className = 'text-sm text-right text-gray-600';
+        subP.textContent = `ยอดรวม: ฿${data.subtotal.toFixed(2)}`;
+        totalsDiv.appendChild(subP);
+
+        if(data.discount){
+            const discountAmount = data.discount.type === 'fixed'
+                ? data.discount.value
+                : (data.subtotal * data.discount.value) / 100;
+            const discP = document.createElement('p');
+            discP.className = 'text-sm text-right text-red-500';
+            discP.textContent = `ส่วนลด (${data.discount.code}): -฿${discountAmount.toFixed(2)}`;
+            totalsDiv.appendChild(discP);
+        }
+
+        if(includeTotal){
+            const totalDiv = document.createElement('div');
+            totalDiv.className = 'flex justify-between items-center mt-1';
+            const label = document.createElement('span');
+            label.className = 'font-bold text-gray-800';
+            label.textContent = 'ยอดสุทธิ:';
+            const value = document.createElement('span');
+            value.className = 'text-xl font-extrabold text-emerald-600';
+            value.textContent = `฿${data.total.toFixed(2)}`;
+            totalDiv.append(label,value);
+            totalsDiv.appendChild(totalDiv);
+        }
+        container.appendChild(totalsDiv);
+    };
+
+    // --- EVENT LISTENERS ---
+
     menuItemsEl.addEventListener('click', e => {
         const button = e.target.closest('button');
         if(!button || !button.dataset.action) return;
@@ -503,96 +640,26 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTotal();
     });
 
-    const renderOrderSummary = (container, data, includeTotal) => {
-        container.innerHTML = '';
-        const displayDate = new Date(data.orderDate).toLocaleString('th-TH',{
-            year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',
-            timeZone:'Asia/Bangkok'
-        });
-
-        const fields = [
-            ['Order ID', data.queueNumber],
-            ['วันที่สั่ง', displayDate],
-            ['ชื่อลูกค้า', data.customerName],
-            ['ช่องทางการติดต่อ', data.customerContact.phone]
-        ];
-        if(data.customerNote) fields.push(['หมายเหตุ', data.customerNote]);
-
-        fields.forEach(([label,value],idx)=>{
-            const p = document.createElement('p');
-            p.className = `text-sm font-bold text-gray-700${idx===0?'':' mt-2'}`;
-            p.textContent = `${label}: ${value}`;
-            container.appendChild(p);
-        });
-
-        const listDiv = document.createElement('div');
-        listDiv.className = 'mt-4';
-        const h4 = document.createElement('h4');
-        h4.className = 'font-bold';
-        h4.textContent = 'รายการสั่งซื้อ:';
-        listDiv.appendChild(h4);
-        data.items.forEach(item=>{
-            const p = document.createElement('p');
-            p.className = 'text-sm text-gray-600';
-            p.textContent = `${item.name} x ${item.quantity} ${item.unit} (฿${item.price * item.quantity})`;
-            listDiv.appendChild(p);
-            if(item.allergyNote){
-                const ap = document.createElement('p');
-                ap.className = 'ml-4 text-xs text-red-500';
-                ap.textContent = `หมายเหตุแพ้อาหาร: ${item.allergyNote}`;
-                listDiv.appendChild(ap);
-            }
-        });
-        container.appendChild(listDiv);
-
-        const totalsDiv = document.createElement('div');
-        totalsDiv.className = 'mt-2 pt-2 border-t';
-        const subP = document.createElement('p');
-        subP.className = 'text-sm text-right text-gray-600';
-        subP.textContent = `ยอดรวม: ฿${data.subtotal.toFixed(2)}`;
-        totalsDiv.appendChild(subP);
-
-        if(data.discount){
-            const discountAmount = data.discount.type === 'fixed'
-                ? data.discount.value
-                : (data.subtotal * data.discount.value) / 100;
-            const discP = document.createElement('p');
-            discP.className = 'text-sm text-right text-red-500';
-            discP.textContent = `ส่วนลด (${data.discount.code}): -฿${discountAmount.toFixed(2)}`;
-            totalsDiv.appendChild(discP);
-        }
-
-        if(includeTotal){
-            const totalDiv = document.createElement('div');
-            totalDiv.className = 'flex justify-between items-center mt-1';
-            const label = document.createElement('span');
-            label.className = 'font-bold text-gray-800';
-            label.textContent = 'ยอดสุทธิ:';
-            const value = document.createElement('span');
-            value.className = 'text-xl font-extrabold text-emerald-600';
-            value.textContent = `฿${data.total.toFixed(2)}`;
-            totalDiv.append(label,value);
-            totalsDiv.appendChild(totalDiv);
-        }
-        container.appendChild(totalsDiv);
-    };
-
     confirmOrderBtn.addEventListener('click', () => {
         const name = customerNameEl.value.trim();
         const phone = customerPhoneEl.value.trim();
         const note = customerNoteEl.value.trim();
+        // MODIFIED: Get selected delivery dates from checkboxes
+        const selectedDatesNodes = document.querySelectorAll('#delivery-dates-container input[type="checkbox"]:checked');
+        const deliveryDates = Array.from(selectedDatesNodes).map(node => node.value);
+
 
         if(!name) return showMessageBox('กรุณากรอกชื่อให้ครบถ้วน','red');
         if(!/^\d{10}$/.test(phone)) return showMessageBox('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)','red');
+        if(deliveryDates.length === 0) return showMessageBox('กรุณาเลือกวันจัดส่งอย่างน้อย 1 วัน', 'red'); // MODIFIED: Validate delivery dates
         if(Object.keys(order.items).length===0) return showMessageBox('กรุณาเลือกเมนูอย่างน้อย 1 รายการ','red');
 
         const finalOrder = {
             queueNumber: getOrderQueueNumber(),
             customerName: name,
-            customerContact: {
-                phone: phone
-            },
+            customerContact: { phone: phone },
             customerNote: note,
+            deliveryDates: deliveryDates, // MODIFIED: Add delivery dates array to order object
             orderDate: new Date().toISOString(),
             items: Object.values(order.items).filter(i=>i.quantity>0),
             subtotal: order.subtotal,
@@ -649,6 +716,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('queueNumber', currentOrder.queueNumber);
         formData.append('customerName', currentOrder.customerName);
         formData.append('customerNote', currentOrder.customerNote);
+        // MODIFIED: Send delivery dates array as a JSON string
+        formData.append('deliveryDates', JSON.stringify(currentOrder.deliveryDates)); 
         formData.append('subtotal', currentOrder.subtotal);
         formData.append('total', currentOrder.total);
         formData.append('discount', currentOrder.discount ? JSON.stringify(currentOrder.discount) : '');
@@ -671,11 +740,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- INITIALIZATION ---
     renderMenu();
     updateTotal();
+    renderDeliveryDates(); // ADDED: Populate delivery dates on page load
 });
 </script>
 </body>
 </html>
-
 
