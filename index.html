@@ -84,7 +84,7 @@
 
         <!-- MODIFIED: Delivery Date Selection with Checkboxes -->
         <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">เลือกวันจัดส่ง (เลือกได้หลายวัน)*</label>
+            <label class="block text-gray-700 font-bold mb-2">เลือกวันจัดส่ง*</label>
             <div id="delivery-dates-container" class="space-y-2 p-3 bg-white rounded-xl border">
                 <!-- Checkboxes will be populated by JavaScript -->
             </div>
@@ -243,16 +243,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ⭐️ เพิ่ม/ลบ วันที่จัดส่งได้ที่นี่ (รูปแบบ: ปี-เดือน-วัน ค.ศ.) ⭐️
     const deliveryDates = [
-        '2025-09-12',
-        '2025-09-15'
+        '2025-09-15',
+        '2025-09-19'
     ];
 
     const menu = [
         { id: 'apple-kiss', name: 'Apple Kiss', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ลเขียว, ขิง, มะนาว', properties: 'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/1.png?raw=true' },
         { id: 'blush-bloom', name: 'Blush Bloom', price: 70, unit: 'ขวด (200ml)', ingredients: 'มะเขือเทศ, สับปะรด, มะนาว', properties: 'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/2.png?raw=true' },
         { id: 'happy-tummy', name: 'Happy Tummy', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, กระชาย, ขิง, มะนาว', properties: 'ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/3.png?raw=true' },
-        { id: 'hearty-green', name: 'Hearty Green', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวา', properties: 'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true' },
-        { id: 'sweet-detox', name: 'Sweet Detox', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, แครอท, บีทรูท', properties: 'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true' },
+        { id: 'hearty-green', name: 'Hearty Green', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, สับปะรด, แตงกวาญี่ปุ่น', properties: 'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/4.png?raw=true' },
+        { id: 'sweet-detox', name: 'Sweet Detox', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, แครอทออสเตรเลีย, บีทรูท', properties: 'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/5.png?raw=true' },
         { id: 'beet-love', name: 'Beet Love', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, บีทรูท, มะนาว', properties: 'ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/6.png?raw=true' },
         { id: 'smart-sip', name: 'Smart Sip', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, เคล, สับปะรด', properties: 'ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/7.png?raw=true' },
         { id: 'recharge-me', name: 'Recharge Me', price: 70, unit: 'ขวด (200ml)', ingredients: 'แอปเปิ้ล, ขิง, มะนาว', properties: 'กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl: 'https://github.com/kornkawes/VerveImage/blob/main/8.png?raw=true' }
@@ -746,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
