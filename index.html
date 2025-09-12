@@ -82,12 +82,13 @@
                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
         </div>
 
-        <!-- MODIFIED: Delivery Date Selection with Checkboxes -->
         <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2">เลือกวันจัดส่ง*</label>
             <div id="delivery-dates-container" class="space-y-2 p-3 bg-white rounded-xl border">
                 <!-- Checkboxes will be populated by JavaScript -->
             </div>
+            <!-- MODIFICATION: Added warning message -->
+            <p id="delivery-warning" class="text-xs text-red-600 mt-2 hidden">(ขอสงวนสิทธิ์ให้ทางร้านค้าเป็นฝ่ายเลือกวันในการจัดส่ง)</p>
         </div>
 
 
@@ -295,8 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const discountCodeInputEl = document.getElementById('discountCode');
     const applyDiscountBtnEl = document.getElementById('apply-discount-btn');
     const discountInfoEl = document.getElementById('discount-info');
-    // MODIFIED: Delivery date container element
     const deliveryDatesContainerEl = document.getElementById('delivery-dates-container');
+    // MODIFICATION: Get the new warning element
+    const deliveryWarningEl = document.getElementById('delivery-warning');
 
     let order = { items:{}, total:0, subtotal:0, discount:null, totalItems:0 };
 
@@ -333,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // MODIFIED: Function to render delivery dates as checkboxes
     const renderDeliveryDates = () => {
         deliveryDatesContainerEl.innerHTML = '';
         const today = new Date();
@@ -494,7 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
             timeZone:'Asia/Bangkok'
         });
         
-        // MODIFIED: Format multiple delivery dates for display
         const formattedDeliveryDates = data.deliveryDates.map(dateString => {
             return new Date(dateString + 'T00:00:00').toLocaleDateString('th-TH', {
                 weekday: 'short', day: 'numeric', month: 'short'
@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fields = [
             ['Order ID', data.queueNumber],
             ['วันที่สั่ง', displayDate],
-            ['วันจัดส่ง', formattedDeliveryDates], // MODIFIED: Display multiple delivery dates
+            ['วันจัดส่ง', formattedDeliveryDates],
             ['ชื่อลูกค้า', data.customerName],
             ['เบอร์โทรศัพท์', data.customerContact.phone]
         ];
@@ -642,14 +642,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = customerNameEl.value.trim();
         const phone = customerPhoneEl.value.trim();
         const note = customerNoteEl.value.trim();
-        // MODIFIED: Get selected delivery dates from checkboxes
         const selectedDatesNodes = document.querySelectorAll('#delivery-dates-container input[type="checkbox"]:checked');
         const deliveryDates = Array.from(selectedDatesNodes).map(node => node.value);
 
 
         if(!name) return showMessageBox('กรุณากรอกชื่อให้ครบถ้วน','red');
         if(!/^\d{10}$/.test(phone)) return showMessageBox('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)','red');
-        if(deliveryDates.length === 0) return showMessageBox('กรุณาเลือกวันจัดส่งอย่างน้อย 1 วัน', 'red'); // MODIFIED: Validate delivery dates
+        if(deliveryDates.length === 0) return showMessageBox('กรุณาเลือกวันจัดส่งอย่างน้อย 1 วัน', 'red');
         if(Object.keys(order.items).length===0) return showMessageBox('กรุณาเลือกเมนูอย่างน้อย 1 รายการ','red');
 
         const finalOrder = {
@@ -657,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
             customerName: name,
             customerContact: { phone: phone },
             customerNote: note,
-            deliveryDates: deliveryDates, // MODIFIED: Add delivery dates array to order object
+            deliveryDates: deliveryDates,
             orderDate: new Date().toISOString(),
             items: Object.values(order.items).filter(i=>i.quantity>0),
             subtotal: order.subtotal,
@@ -714,7 +713,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('queueNumber', currentOrder.queueNumber);
         formData.append('customerName', currentOrder.customerName);
         formData.append('customerNote', currentOrder.customerNote);
-        // MODIFIED: Send delivery dates array as a JSON string
         formData.append('deliveryDates', JSON.stringify(currentOrder.deliveryDates)); 
         formData.append('subtotal', currentOrder.subtotal);
         formData.append('total', currentOrder.total);
@@ -741,17 +739,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INITIALIZATION ---
     renderMenu();
     updateTotal();
-    renderDeliveryDates(); // ADDED: Populate delivery dates on page load
+    // MODIFICATION: Add event listener for delivery date changes
+    deliveryDatesContainerEl.addEventListener('change', () => {
+        const selectedCount = deliveryDatesContainerEl.querySelectorAll('input:checked').length;
+        if (selectedCount > 1) {
+            deliveryWarningEl.classList.remove('hidden');
+        } else {
+            deliveryWarningEl.classList.add('hidden');
+        }
+    });
+    renderDeliveryDates(); 
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
