@@ -568,14 +568,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- EVENTS ---
-  goToCheckoutBtnEl.addEventListener('click', () => {
-    renderOrderSummary(orderSummaryEl, { items: Object.values(order.items) }, false);
-    updateTotal();
-    orderFormSection.classList.add('hidden');
-    paymentSection.classList.remove('hidden');
-    floatingCartBtnEl.classList.add('hidden');
+  // --- EVENTS --
+goToCheckoutBtnEl.addEventListener('click', () => {
+  // อัปเดตสรุปรายการก่อน
+  renderOrderSummary(orderSummaryEl, { items: Object.values(order.items) }, false);
+  updateTotal();
+
+  // สลับหน้า: ซ่อนเมนู โชว์หน้ากรอกข้อมูล (กันไม่ให้เลื่อนไปส่วน QR)
+  orderFormSection.classList.add('hidden');
+  paymentSection.classList.remove('hidden');
+  floatingCartBtnEl.classList.add('hidden');
+
+  // บังคับให้หน้าอยู่ที่ส่วน "ข้อมูลการจัดส่ง" และโฟกัสช่องชื่อ
+  requestAnimationFrame(() => {
+    // รีเซ็ตตำแหน่งสกอลล์ของหน้าต่าง
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    // โฟกัสช่องชื่อโดยกันการสกอลล์อัตโนมัติ แล้วค่อยเลื่อนให้ติดบนสุด
+    customerNameEl.focus({ preventScroll: true });
+    customerNameEl.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'auto' });
+
+    // ถ้า container ภายในมีสกอลล์ของตัวเอง ให้รีเซ็ตด้วย (ไม่บังคับ แต่ช่วยกันไว้)
+    paymentSection.scrollTop = 0;
   });
+});
 
   backToMenuBtn.addEventListener('click', () => {
     paymentSection.classList.add('hidden');
@@ -689,3 +705,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
