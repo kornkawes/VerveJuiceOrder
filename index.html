@@ -485,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const orderedStrip = hasAny ? `
         <div class="mt-1">
-          <p class="text-xs text-gray-600 font-semibold">ออเดอร์ที่สั่งไว้</p>
+          <p class="text-xs text-gray-600 font-semibold">ออเดอร์ที่เลือกไว้</p>
           ${variants.map(v => {
             const safeAllergyKey = v.allergyKey.replace(/'/g, "\\'");
             return `
@@ -705,6 +705,7 @@ goToCheckoutBtnEl.addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
