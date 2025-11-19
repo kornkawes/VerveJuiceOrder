@@ -73,7 +73,6 @@
         <p class="text-center">สาทร / ตึก Park Silom</p>
         <p class="text-center">ไทรน้อย / หมู่บ้านชวนชม</p>
         <p class="text-center text-xs text-gray-600">(อยู่นอกพื้นที่สามารถทักมาสอบถามได้)</p>
-                <p class="text-center text-xs text-gray-600">(ปิดรับออเดอร์ก่อน 00:00 ของวันจัดส่ง)</p>
       </div>
       <hr class="border-dashed border-emerald-200">
       <div>
@@ -503,11 +502,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const renderDeliveryDates = () => {
     deliveryDatesContainerEl.innerHTML = '';
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+    const now = new Date();
+    const cutoffHours = 12; // ตัดรอบล่วงหน้า 12 ชม.
+    const cutoffMs = cutoffHours * 60 * 60 * 1000;
 
     local_deliveryDates.forEach(dateString => {
       const deliveryDate = new Date(dateString + 'T00:00:00');
-      if (deliveryDate >= today) {
+
+      if (deliveryDate.getTime() - now.getTime() >= cutoffMs) {
         const formattedDate = deliveryDate.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const id = `date-${dateString}`;
         deliveryDatesContainerEl.innerHTML += `
