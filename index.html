@@ -51,7 +51,7 @@
 
   <!-- Order Form Section -->
   <div id="order-form-section">
-    <div class="flex justify-center mb-6">
+    <div class="flex justify-center mb-3">
       <img src="https://github.com/kornkawes/VerveImage/blob/main/logo2.png?raw=true"
            alt="Verve Juice Logo" class="w-48" />
     </div>
@@ -64,6 +64,23 @@
       <a href="https://www.instagram.com/vervejuice.th" class="hover:text-emerald-600" target="_blank" aria-label="Instagram">
         <i class="fa-brands fa-instagram"></i>
       </a>
+    </div>
+
+    <!-- NEW: Announcement Box -->
+    <div class="mb-6 p-4 bg-white/80 rounded-2xl border border-emerald-200 text-sm text-gray-800 space-y-3">
+      <div>
+        <p class="font-bold text-center text-emerald-700">📍 จุดนัดรับหลัก 📍</p>
+        <p class="text-center">สาทร / ตึก Park Silom</p>
+        <p class="text-center">ไทรน้อย / หมู่บ้านชวนชม</p>
+        <p class="text-center text-xs text-gray-600">(อยู่นอกพื้นที่สามารถทักมาสอบถามได้)</p>
+      </div>
+      <hr class="border-dashed border-emerald-200">
+      <div>
+        <p class="font-bold text-center text-emerald-700">🍹 รอบนัดรับ 🍹</p>
+        <p class="text-center">วันพฤหัสบดีที่ 20/11</p>
+        <p class="text-center">วันศุกร์ที่ 21/11</p>
+        <p class="text-center text-xs text-gray-600">(ปิดรับออเดอร์ก่อน 00:00 ของวันจัดส่ง)</p>
+      </div>
     </div>
 
     <h2 class="text-2xl font-bold mb-4" style="color:#39531a;">เมนู</h2>
@@ -96,7 +113,7 @@
         <p id="delivery-warning" class="text-xs text-red-600 mt-2 hidden">(ขอสงวนสิทธิ์ให้ทางร้านค้าเป็นฝ่ายเลือกวันในการจัดส่ง)</p>
       </div>
       <div>
-        <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
+        <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ*</label>
         <textarea id="customerNote" placeholder="เช่น รับที่ ไทรน้อย, สาทร หรือ อยู่นอกพื้นที่รับสินค้าสามารถทักมาที่ ig/tiktok : @vervejuice.th"
                   class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
       </div>
@@ -210,17 +227,13 @@
 </div>
 
 <!-- Cart Sidebar -->
-<!-- UPDATED: Aligns to bottom with flex items-end -->
 <div id="cart-sidebar" class="fixed inset-0 z-50 flex items-end hidden">
   <!-- Overlay -->
   <div id="cart-overlay" class="absolute inset-0 bg-black bg-opacity-30"></div>
   <!-- Content -->
-  <!-- UPDATED: Bottom sheet styles: max-w-lg mx-auto, max-h-[90vh], rounded-t-2xl, translate-y-full -->
   <div id="cart-content" class="relative w-full max-w-lg mx-auto bg-white max-h-[90vh] shadow-xl transform translate-y-full flex flex-col rounded-t-2xl">
     <!-- Header -->
-    <!-- UPDATED: Added flex-shrink-0, drag handle, and wrapper div for h2/button -->
     <div class="flex-shrink-0 p-4 border-b sticky top-0 bg-white z-10 rounded-t-2xl">
-      <!-- NEW: Drag handle -->
       <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3"></div>
       <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold" style="color:#39531a;">ตะกร้าของคุณ</h2>
@@ -228,12 +241,8 @@
       </div>
     </div>
     <!-- Item List -->
-    <div id="cart-items-list" class="flex-1 overflow-y-auto p-4 space-y-4">
-      <!-- Items injected by JS -->
-      <!-- Example: <p class="text-center text-gray-500">ตะกร้าว่างเปล่า</p> -->
-    </div>
+    <div id="cart-items-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
     <!-- Footer -->
-    <!-- UPDATED: Added flex-shrink-0 -->
     <div class="flex-shrink-0 p-4 border-t bg-gray-50 sticky bottom-0 z-10">
       <div class="flex justify-between items-center text-lg">
         <span class="font-bold">ยอดรวม</span>
@@ -246,13 +255,10 @@
   </div>
 </div>
 
-
 <!-- Floating Cart Button -->
 <div id="floating-cart-btn" class="fixed bottom-0 left-0 right-0 z-40 p-4 hidden">
-  <!-- ปุ่มนี้จะเปิด Sidebar แทน -->
   <button id="open-cart-popup-btn"
           class="w-full max-w-lg mx-auto bg-emerald-600 text-white font-bold py-3 px-4 rounded-2xl shadow-lg hover:bg-emerald-700 transition-transform hover:scale-105 flex justify-between items-center">
-    <!-- Content injected by JS -->
   </button>
 </div>
 
@@ -262,19 +268,17 @@ window.getEl = id => document.getElementById(id);
 // --- GLOBAL STATE ---
 let order = { items:{}, total:0, subtotal:0, discount:null, totalItems:0 };
 let menu = [];
-let updateTotal = () => {}; // replaced later
-let renderCartSidebarContent = () => {}; // replaced later
+let updateTotal = () => {};
+let renderCartSidebarContent = () => {};
 
 // ===== MODAL (เลือกเมนู/แพ้ส่วนผสม) =====
 window.changeModalQty = (inputId, change) => {
   const qtyInput = getEl(inputId);
   let currentQty = parseInt(qtyInput.value);
-  // --- UPDATED: Min quantity in modal is 1 ---
   let newQty = Math.max(1, currentQty + change);
   qtyInput.value = newQty;
 };
 
-// --- UPDATED: Modal UI uses Dropdown ---
 window.openItemModal = (id) => {
   const item = menu.find(i => i.id === id);
   const modalContentEl = getEl('modal-content');
@@ -296,16 +300,12 @@ window.openItemModal = (id) => {
   modalContentEl.innerHTML = `
     <h3 class="text-2xl font-bold mb-4 text-center">${item.name}</h3>
     <div class="space-y-4">
-      
-      <!-- Size Dropdown -->
       <div>
         <label for="modal-size-select" class="block text-sm font-bold text-gray-700 mb-1">เลือกขนาด</label>
         <select id="modal-size-select" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           ${sizeOptionsHtml}
         </select>
       </div>
-
-      <!-- Quantity Selector -->
       <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
         <p class="font-bold text-gray-700">จำนวน</p>
         <div class="flex items-center space-x-2">
@@ -315,8 +315,6 @@ window.openItemModal = (id) => {
         </div>
       </div>
     </div>
-    
-    <!-- Allergy Section (Unchanged) -->
     <div class="mt-4">
       <label class="flex items-center space-x-2 cursor-pointer font-semibold">
         <input type="checkbox" onchange="getEl('allergy-options-${id}').classList.toggle('hidden')" class="form-checkbox h-4 w-4 text-emerald-600 rounded">
@@ -334,33 +332,24 @@ window.openItemModal = (id) => {
   modalContentEl.classList.add('scale-100');
 };
 
-// --- UPDATED: Reads from Dropdown and single quantity input ---
 window.confirmItemSelection = (id) => {
   const modalContentEl = getEl('modal-content');
-
-  // Get selected size and price
   const sizeSelectEl = getEl('modal-size-select');
   const selectedOption = sizeSelectEl.options[sizeSelectEl.selectedIndex];
   const size = selectedOption.value;
   const price = parseFloat(selectedOption.dataset.price);
-
-  // Get quantity
   const quantity = parseInt(getEl('modal-qty-input').value);
-  if (quantity <= 0) return closeItemModal(); // Should not happen due to min=1
+  if (quantity <= 0) return closeItemModal();
 
-  // Get allergies
   const allergyNodes = modalContentEl.querySelectorAll(`input[name="modal-allergy-${id}"]:checked`);
   const allergies = Array.from(allergyNodes).map(node => node.value).sort();
   const allergyKey = allergies.length > 0 ? allergies.join(',') : 'none';
-
-  // Create composite ID
   const compositeId = `${id}-${size}-${allergyKey}`;
 
-  // Add to order
   if (order.items[compositeId]) {
     order.items[compositeId].quantity += quantity;
   } else {
-    const itemData = menu.find(i => i.id === id); // Get base item data
+    const itemData = menu.find(i => i.id === id);
     order.items[compositeId] = {
       id: id, name: itemData.name, size: size,
       price: price, quantity: quantity, allergies: allergies
@@ -380,10 +369,6 @@ window.closeItemModal = () => {
   setTimeout(() => { itemModalEl.classList.add('hidden'); modalContentEl.innerHTML = ''; }, 300);
 };
 
-// ===== ORDERED LIST (แสดงเฉพาะที่เคยสั่ง + ปุ่ม –/+) =====
-// --- REMOVED getOrderedVariantsForMenu function ---
-
-// ปรับจำนวนของ “ตัวนั้นเป๊ะๆ” (ไซซ์ + ชุดแพ้)
 window.adjustItem = (menuId, size, allergyKey, delta) => {
   const key = `${menuId}-${size}-${allergyKey}`;
   if (!order.items[key]) return;
@@ -392,34 +377,30 @@ window.adjustItem = (menuId, size, allergyKey, delta) => {
   updateTotal();
 };
 
-// --- NEW: Cart Sidebar Functions ---
 window.openCartSidebar = () => {
   renderCartSidebarContent();
   const sidebar = getEl('cart-sidebar');
   sidebar.classList.remove('hidden');
-  // Use timeout to allow transition to apply
   setTimeout(() => sidebar.classList.add('open'), 10);
 };
 
 window.closeCartSidebar = () => {
   const sidebar = getEl('cart-sidebar');
   sidebar.classList.remove('open');
-  // Hide after transition ends
   setTimeout(() => sidebar.classList.add('hidden'), 300);
 };
 
 renderCartSidebarContent = () => {
   const listEl = getEl('cart-items-list');
   const subtotalEl = getEl('cart-subtotal');
-  listEl.innerHTML = ''; // Clear old content
+  listEl.innerHTML = '';
 
   if (order.totalItems === 0) {
     listEl.innerHTML = '<p class="text-center text-gray-500">ตะกร้าว่างเปล่า</p>';
   } else {
     const itemsToRender = Object.values(order.items).sort((a,b) => a.name.localeCompare(b.name));
-    
     itemsToRender.forEach(item => {
-      if (item.quantity <= 0) return; // Skip items removed
+      if (item.quantity <= 0) return;
       const allergyKey = (item.allergies && item.allergies.length) ? item.allergies.join(',') : 'none';
       const safeAllergyKey = allergyKey.replace(/'/g, "\\'");
       const itemData = menu.find(i => i.id === item.id);
@@ -447,13 +428,10 @@ renderCartSidebarContent = () => {
       `;
     });
   }
-  
   subtotalEl.textContent = `฿${order.subtotal.toFixed(2)}`;
 };
 
-
 document.addEventListener('DOMContentLoaded', () => {
-  // --- CONFIGURATION ---
   const local_deliveryDates = ['2025-11-20','2025-11-21','2025-11-14'];
   const local_menu = [
     { id:'apple-kiss',   name:'Apple Kiss',   ingredients:'แอปเปิ้ลเขียว, ขิง, มะนาว', properties:'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/apple%20kiss.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
@@ -473,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menu = local_menu;
 
-  // --- SELECTORS ---
   const orderFormSection = getEl('order-form-section'), paymentSection = getEl('payment-section');
   const confirmationSection = getEl('confirmation-section'), menuItemsEl = getEl('menu-items');
   const customerNameEl = getEl('customerName'), customerPhoneEl = getEl('customerPhone');
@@ -488,19 +465,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const slipPreviewEl = getEl('slip-preview'), uploadSlipBtn = getEl('upload-slip-btn');
   const uploadSlipTextEl = getEl('upload-slip-text'), uploadSlipSpinnerEl = getEl('upload-slip-spinner');
   const finalOrderSummaryEl = getEl('final-order-summary');
-  const itemModalEl = getEl('item-modal'), modalOverlayEl = getEl('modal-overlay'), modalContentEl = getEl('modal-content');
-  
-  // --- UPDATED: Cart Button Selectors ---
+  const itemModalEl = getEl('item-modal'), modalOverlayEl = getEl('modal-overlay');
   const floatingCartBtnEl = getEl('floating-cart-btn');
-  const openCartPopupBtnEl = getEl('open-cart-popup-btn'); // Renamed from goToCheckoutBtnEl
-  
-  // --- NEW: Cart Sidebar Selectors ---
+  const openCartPopupBtnEl = getEl('open-cart-popup-btn');
   const cartSidebarEl = getEl('cart-sidebar');
   const cartOverlayEl = getEl('cart-overlay');
   const closeCartBtnEl = getEl('close-cart-btn');
   const checkoutFromCartBtnEl = getEl('checkout-from-cart-btn');
 
-  // --- HELPERS ---
   window.showMessageBox = (message, color) => {
     const colorMap = { red:'bg-red-500', green:'bg-green-500' };
     const box = document.createElement('div');
@@ -530,7 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- RENDER ---
   const renderDeliveryDates = () => {
     deliveryDatesContainerEl.innerHTML = '';
     const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -552,7 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const renderFloatingCart = () => {
     const isPaymentPage = !paymentSection.classList.contains('hidden');
     if (order.totalItems > 0 && !isPaymentPage) {
-      // --- UPDATED: Button is now 'openCartPopupBtnEl' ---
       openCartPopupBtnEl.innerHTML = `
         <span>🛒 ตะกร้า (${order.totalItems} รายการ)</span>
         <span class="font-extrabold text-lg">฿${order.total.toFixed(2)}</span>`;
@@ -594,19 +564,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderFloatingCart();
-    // --- REMOVED renderMenu() call from updateTotal ---
-    
-    // --- NEW: Update sidebar if it's open ---
     if (cartSidebarEl.classList.contains('open')) {
       renderCartSidebarContent();
     }
   };
 
-  // เมนู + แถบ “ออเดอร์ที่เคยสั่งไว้” (เฉพาะเมื่อมีของ)
   const renderMenu = () => {
     menuItemsEl.innerHTML = menu.map(item => {
-      // --- REMOVED variants, hasAny, and orderedStrip variables ---
-
       return `
         <div class="p-4 bg-gray-50 rounded-xl card space-y-3">
           <div class="flex items-start space-x-4">
@@ -617,13 +581,11 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-xs text-gray-500 mt-1"><b class="text-gray-600">สรรพคุณ:</b> ${item.properties}</p>
               <p class="text-sm text-gray-700 font-semibold mt-2">฿${item.sizes[0].price} - ฿${item.sizes[item.sizes.length-1].price}</p>
             </div>
-            <!-- ปุ่มเปิดโมดัล: + วงกลม -->
             <button onclick="openItemModal('${item.id}')"
                     class="w-10 h-10 flex items-center justify-center rounded-full text-white text-2xl font-bold bg-emerald-600 hover:bg-emerald-700 transition-colors flex-shrink-0">
               +
             </button>
           </div>
-          <!-- FIXED: Changed comment text to remove JS interpolation -->
         </div>
       `;
     }).join('');
@@ -665,28 +627,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- EVENTS --
-  
-  // --- UPDATED: This button now opens the cart sidebar ---
   openCartPopupBtnEl.addEventListener('click', openCartSidebar);
-
-  // --- NEW: Cart Sidebar Listeners ---
   closeCartBtnEl.addEventListener('click', closeCartSidebar);
   cartOverlayEl.addEventListener('click', closeCartSidebar);
 
-  // --- NEW: Checkout button *inside* the sidebar ---
   checkoutFromCartBtnEl.addEventListener('click', () => {
     closeCartSidebar();
-    
-    // This is the original logic from the old button
     renderOrderSummary(orderSummaryEl, { items: Object.values(order.items) }, false);
-    updateTotal(); // Ensure totals are correct on payment page
-
+    updateTotal();
     orderFormSection.classList.add('hidden');
     paymentSection.classList.remove('hidden');
-    floatingCartBtnEl.classList.add('hidden'); // Hide floating button on payment page
-
-    // Scroll to top of payment section
+    floatingCartBtnEl.classList.add('hidden');
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       customerNameEl.focus({ preventScroll: true });
@@ -695,11 +646,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-
   backToMenuBtn.addEventListener('click', () => {
     paymentSection.classList.add('hidden');
     orderFormSection.classList.remove('hidden');
-    renderFloatingCart(); // Show floating button again
+    renderFloatingCart();
   });
 
   modalOverlayEl.addEventListener('click', closeItemModal);
@@ -720,7 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (order.totalItems < found.minItems) msg = `ต้องสั่งซื้อขั้นต่ำ ${found.minItems} ขวด`;
     else { order.discount = found; msg = 'ใช้โค้ดส่วนลดสำเร็จ!'; color = 'green'; }
 
-    // ตั้งคลาสแบบคงที่เพื่อกัน Tailwind CDN purge
     discountInfoEl.className = 'text-sm mt-2 h-5';
     if (color === 'green') discountInfoEl.classList.add('text-green-600');
     else discountInfoEl.classList.add('text-red-600');
@@ -733,11 +682,13 @@ document.addEventListener('DOMContentLoaded', () => {
   uploadSlipBtn.addEventListener('click', async () => {
     const name = customerNameEl.value.trim();
     const phone = customerPhoneEl.value.trim();
+    const note = customerNoteEl.value.trim();
     const selectedDates = Array.from(deliveryDatesContainerEl.querySelectorAll('input:checked')).map(node => node.value);
     const slipFile = slipUploadEl.files[0];
 
     if(!name) return showMessageBox('กรุณากรอกชื่อ','red');
     if(!/^\d{10}$/.test(phone)) return showMessageBox('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก','red');
+    if(!note) return showMessageBox('กรุณากรอกหมายเหตุ','red');
     if(selectedDates.length === 0) return showMessageBox('กรุณาเลือกวันจัดส่ง','red');
     if(!slipFile) return showMessageBox('กรุณาอัปโหลดสลิป','red');
 
@@ -747,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const finalOrder = {
       queueNumber: getOrderQueueNumber(), customerName: name,
-      customerContact: { phone }, customerNote: customerNoteEl.value.trim(),
+      customerContact: { phone }, customerNote: note,
       deliveryDates: selectedDates, orderDate: new Date().toISOString(),
       items: Object.values(order.items).filter(i=>i.quantity>0),
       subtotal: order.subtotal,
@@ -800,7 +751,6 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryWarningEl.classList.toggle('hidden', selectedCount <= 1);
   });
 
-  // --- INIT ---
   renderMenu();
   updateTotal();
   renderDeliveryDates();
@@ -808,9 +758,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
