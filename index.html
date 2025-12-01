@@ -432,14 +432,14 @@ renderCartSidebarContent = () => {
 document.addEventListener('DOMContentLoaded', () => {
   const local_deliveryDates = ['2025-12-01','2025-12-02','2025-12-03','2025-12-04','2025-12-05'];
   const local_menu = [
-    { id:'apple-kiss',   name:'Apple Kiss',   ingredients:'แอปเปิ้ลเขียว, ขิง, มะนาว', properties:'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/apple%20kiss.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'blush-bloom',  name:'Blush Bloom',  ingredients:'มะเขือเทศ, สับปะรด, มะนาว', properties:'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/blush%20bloom.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'Pure-guava',  name:'Pure Guava',  ingredients:'แอปเปิ้ลเขียว, ฝรั่ง, แตงกวาญี่ปุ่น, มะนาว', properties:'ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/lime%20guava.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'hearty-green', name:'Hearty Green', ingredients:'แอปเปิ้ล, สับปะรด, แตงกวาญี่ปุ่น', properties:'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/hearty%20green.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'sweet-detox',  name:'Sweet Detox',  ingredients:'แอปเปิ้ล, แครอท, บีทรูท', properties:'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/sweet%20detox.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'beet-love',    name:'Beet Love',    ingredients:'แอปเปิ้ล, บีทรูท, มะนาว', properties:'ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/beet%20love.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'smart-sip',    name:'Smart Sip',    ingredients:'แอปเปิ้ล, เคล, สับปะรด', properties:'ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/smart%20sip.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
-    { id:'recharge-me',  name:'Recharge Me',  ingredients:'แอปเปิ้ล, ขิง, มะนาว', properties:'กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/recharge%20me.jpg?raw=true', sizes: [{size:'200ml', price:70}, {size:'300ml', price:105}]},
+    { id:'apple-kiss',   name:'Apple Kiss',   ingredients:'แอปเปิ้ลเขียว, ขิง, มะนาว', properties:'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/apple%20kiss.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'blush-bloom',  name:'Blush Bloom',  ingredients:'มะเขือเทศ, สับปะรด, มะนาว', properties:'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/blush%20bloom.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'Pure-guava',  name:'Pure Guava',  ingredients:'แอปเปิ้ลเขียว, ฝรั่ง, แตงกวาญี่ปุ่น, มะนาว', properties:'ล้างสารพิษ, รักษาอาการท้องผูก, ท้องอืด, จุกเสียดแน่นท้อง', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/lime%20guava.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'hearty-green', name:'Hearty Green', ingredients:'แอปเปิ้ล, สับปะรด, แตงกวาญี่ปุ่น', properties:'ลดคอเลสเตอรอลและต่อต้านมะเร็ง', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/hearty%20green.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'sweet-detox',  name:'Sweet Detox',  ingredients:'แอปเปิ้ล, แครอท, บีทรูท', properties:'ล้างสารพิษสำหรับคนควบคุมน้ำหนัก, ต้านสารอนุมูลอิสระ', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/sweet%20detox.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'beet-love',    name:'Beet Love',    ingredients:'แอปเปิ้ล, บีทรูท, มะนาว', properties:'ดูแลสุขภาพหัวใจและควบคุมความดันโลหิต', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/beet%20love.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'smart-sip',    name:'Smart Sip',    ingredients:'แอปเปิ้ล, เคล, สับปะรด', properties:'ช่วยบำรุงการทำงานของสมองและบำรุงสายตา', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/smart%20sip.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
+    { id:'recharge-me',  name:'Recharge Me',  ingredients:'แอปเปิ้ล, ขิง, มะนาว', properties:'กระตุ้นร่างกายให้ฟื้นตัวจากการเมื่อยล้า', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/recharge%20me.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
   ];
   const local_discountCodes = [
     { code:"SUCHATANDSOMPOP", type:"percent", value:15, expiryDate:"2025-12-31", minSpend:0, minItems:5 },
@@ -760,3 +760,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
