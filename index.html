@@ -69,7 +69,7 @@
     <!-- NEW: Announcement Box -->
     <div class="mb-6 p-4 bg-white/80 rounded-2xl border border-emerald-200 text-sm text-gray-800 space-y-3">
       <div>
-        <p class="font-bold text-center text-emerald-700">📍 จุดนัดรับ 📍</p>
+        <p class="font-bold text-center text-emerald-700">📍 สถานที่จัดส่ง 📍</p>
         <p class="text-center">สาทร / ตึก Park Silom</p>
         <p class="text-center">ไทรน้อย / หมู่บ้านชวนชม</p>
         <p class="text-center text-xs text-gray-600">(อยู่นอกพื้นที่สามารถทักมาสอบถามได้)</p>
@@ -77,7 +77,7 @@
       <hr class="border-dashed border-emerald-200">
       <div>
         <p class="font-bold text-center text-emerald-700">🍹 ประกาศ 🍹</p>
-        <p class="text-center">เปิดพรีออเดอร์ทุกเมนูเริ่ม 1 ธันวาคม 2025</p>
+        <p class="text-center">หยุด 11-12 ธันวาคม ครับ</p>
       </div>
     </div>
 
@@ -105,14 +105,33 @@
         <input id="customerPhone" type="tel" placeholder="เบอร์โทรศัพท์ (10 หลัก)"
                class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300" />
       </div>
+
+      <!-- NEW: เลือกสถานที่จัดส่งก่อน -->
+      <div>
+        <label for="deliveryLocation" class="block text-gray-700 font-bold mb-2">เลือกสถานที่จัดส่ง*</label>
+
+            <p class="text-xs text-red-600 mt-1">
+                กรณีที่อยู่นอกพื้นที่จัดส่งสามารถทักมาสอบถามรายละเอียดได้ที่ ig/tiktok : @vervejuice.th
+            </p>
+
+        <select id="deliveryLocation"
+                class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
+          <option value="">-- กรุณาเลือกสถานที่จัดส่ง --</option>
+          <option value="sathorn">สาทร / ตึก Park Silom</option>
+          <option value="sainoi">ไทรน้อย / หมู่บ้านชวนชม</option>
+        </select>
+      </div>
+
       <div>
         <label class="block text-gray-700 font-bold mb-2">เลือกวันจัดส่ง*</label>
-        <div id="delivery-dates-container" class="space-y-2 p-3 bg-white rounded-xl border"></div>
+        <div id="delivery-dates-container" class="space-y-2 p-3 bg-white rounded-xl border text-sm text-gray-600">
+          <p class="text-center text-gray-400">กรุณาเลือกสถานที่จัดส่งก่อน</p>
+        </div>
         <p id="delivery-warning" class="text-xs text-red-600 mt-2 hidden">(ขอสงวนสิทธิ์ให้ทางร้านค้าเป็นฝ่ายเลือกวันในการจัดส่ง)</p>
       </div>
       <div>
-        <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ*</label>
-        <textarea id="customerNote" placeholder="เช่น รับที่ ไทรน้อย, สาทร หรือ อยู่นอกพื้นที่รับสินค้าสามารถทักมาที่ ig/tiktok : @vervejuice.th"
+        <label for="customerNote" class="block text-gray-700 font-bold mb-2">หมายเหตุ</label>
+        <textarea id="customerNote" placeholder="ส่งด้วย grab/lineman จากจุดนับรับในโซนสาทร/ไทรน้อย"
                   class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none h-24"></textarea>
       </div>
     </div>
@@ -430,7 +449,24 @@ renderCartSidebarContent = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const local_deliveryDates = ['2025-12-10','2025-12-03','2025-12-04','2025-12-05'];
+  // CONFIG: ตั้งค่าพื้นที่จัดส่ง + วันในสัปดาห์ที่สามารถไปส่งได้
+  // getDay() ของ JS: 0=อาทิตย์, 1=จันทร์, 2=อังคาร, 3=พุธ, 4=พฤหัส, 5=ศุกร์, 6=เสาร์
+  const deliveryConfig = {
+    sathorn: {
+      label: 'สาทร / ตึก Park Silom',
+      weekdays: [1, 2, 3] // จันทร์-พุธ
+    },
+    sainoi: {
+      label: 'ไทรน้อย / หมู่บ้านชวนชม',
+      weekdays: [1, 2, 3] // พฤหัส-ศุกร์ (ปรับได้เลยตามรอบจริง)
+    }
+    // ถ้าอนาคตมีพื้นที่อื่น เพิ่ม key เพิ่มได้ เช่น:
+    // otherArea: { label: 'พื้นที่อื่น', weekdays: [2,5] }
+  };
+
+  // จำนวนสัปดาห์ล่วงหน้าที่จะแสดง (เหมือน “อาทิตย์ต่ออาทิตย์” ไม่โชว์ยาวทั้งเดือน)
+  const DELIVERY_WEEKS_AHEAD = 1;
+
   const local_menu = [
     { id:'apple-kiss',   name:'Apple Kiss',   ingredients:'แอปเปิ้ลเขียว, ขิง, มะนาว', properties:'ช่วยป้องกันผิวจากแสงแดด, ลดจุดด่างดำ, รอยสิว', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/apple%20kiss.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
     { id:'blush-bloom',  name:'Blush Bloom',  ingredients:'มะเขือเทศ, สับปะรด, มะนาว', properties:'ช่วยผลัดเซลล์ผิวเก่าและลดริ้วรอย', imageUrl:'https://github.com/kornkawes/VerveImage/blob/main/blush%20bloom.jpg?raw=true', sizes: [{size:'250ml', price:89}, {size:'300ml', price:109}]},
@@ -452,7 +488,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderFormSection = getEl('order-form-section'), paymentSection = getEl('payment-section');
   const confirmationSection = getEl('confirmation-section'), menuItemsEl = getEl('menu-items');
   const customerNameEl = getEl('customerName'), customerPhoneEl = getEl('customerPhone');
-  const customerNoteEl = getEl('customerNote'), deliveryDatesContainerEl = getEl('delivery-dates-container');
+  const customerNoteEl = getEl('customerNote'),
+        deliveryLocationEl = getEl('deliveryLocation'),
+        deliveryDatesContainerEl = getEl('delivery-dates-container');
   const deliveryWarningEl = getEl('delivery-warning'), discountCodeInputEl = getEl('discountCode');
   const applyDiscountBtnEl = getEl('apply-discount-btn'), discountInfoEl = getEl('discount-info');
   const subtotalPriceEl = getEl('subtotal-price'), discountAmountEl = getEl('discount-amount');
@@ -500,25 +538,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const renderDeliveryDates = () => {
+  // สร้าง list ของวันที่ส่งได้สำหรับแต่ละพื้นที่ จาก config + จำนวนสัปดาห์ล่วงหน้า
+  const generateDeliveryDatesForLocation = (locationKey) => {
+    const cfg = deliveryConfig[locationKey];
+    if (!cfg || !cfg.weekdays || cfg.weekdays.length === 0) return [];
+
+    const dates = [];
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const totalDays = DELIVERY_WEEKS_AHEAD * 7;
+
+    for (let i = 0; i < totalDays; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const dow = d.getDay(); // 0-6
+      if (cfg.weekdays.includes(dow)) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        dates.push(`${yyyy}-${mm}-${dd}`);
+      }
+    }
+    return dates;
+  };
+
+  const renderDeliveryDates = (locationKey) => {
     deliveryDatesContainerEl.innerHTML = '';
 
+    if (!locationKey || !deliveryConfig[locationKey]) {
+      deliveryDatesContainerEl.innerHTML = '<p class="text-center text-gray-400 text-sm">กรุณาเลือกสถานที่จัดส่งก่อน</p>';
+      return;
+    }
+
     const now = new Date();
-    const cutoffHours = 12; // ตัดรอบล่วงหน้า 12 ชม.
+    const cutoffHours = 12; // ตัดรอบล่วงหน้า 12 ชม. (เหมือนของเดิม)
     const cutoffMs = cutoffHours * 60 * 60 * 1000;
 
-    local_deliveryDates.forEach(dateString => {
-      const deliveryDate = new Date(dateString + 'T00:00:00');
+    const availableDateStrings = generateDeliveryDatesForLocation(locationKey);
 
-      if (deliveryDate.getTime() - now.getTime() >= cutoffMs) {
-        const formattedDate = deliveryDate.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const id = `date-${dateString}`;
-        deliveryDatesContainerEl.innerHTML += `
-          <div class="flex items-center">
-            <input type="checkbox" id="${id}" name="deliveryDate" value="${dateString}" class="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500">
-            <label for="${id}" class="ml-3 block text-sm text-gray-900">${formattedDate}</label>
-          </div>`;
-      }
+    const validDates = availableDateStrings.filter(dateString => {
+      const deliveryDate = new Date(dateString + 'T00:00:00');
+      return (deliveryDate.getTime() - now.getTime()) >= cutoffMs;
+    });
+
+    if (validDates.length === 0) {
+      deliveryDatesContainerEl.innerHTML = '<p class="text-center text-red-500 text-sm">ขณะนี้ยังไม่มีรอบจัดส่งสำหรับพื้นที่นี้ในช่วงเวลาที่เปิดให้จอง</p>';
+      return;
+    }
+
+    validDates.forEach(dateString => {
+      const deliveryDate = new Date(dateString + 'T00:00:00');
+      const formattedDate = deliveryDate.toLocaleDateString('th-TH', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      const id = `date-${dateString}`;
+      deliveryDatesContainerEl.innerHTML += `
+        <div class="flex items-center">
+          <input type="checkbox" id="${id}" name="deliveryDate" value="${dateString}" class="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500">
+          <label for="${id}" class="ml-3 block text-sm text-gray-900">${formattedDate}</label>
+        </div>`;
     });
   };
 
@@ -603,6 +681,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ['ชื่อลูกค้า', data.customerName],
         ['เบอร์โทรศัพท์', data.customerContact.phone]
       ];
+      if (data.deliveryLocationLabel) {
+        fields.push(['สถานที่จัดส่ง', data.deliveryLocationLabel]);
+      }
       if (data.customerNote) fields.push(['หมายเหตุ', data.customerNote]);
       container.innerHTML += fields.map(([label, value]) => `<p class="text-sm"><b class="font-semibold">${label}:</b> ${value}</p>`).join('');
     }
@@ -685,12 +766,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = customerNameEl.value.trim();
     const phone = customerPhoneEl.value.trim();
     const note = customerNoteEl.value.trim();
+    const locationKey = deliveryLocationEl.value;
     const selectedDates = Array.from(deliveryDatesContainerEl.querySelectorAll('input:checked')).map(node => node.value);
     const slipFile = slipUploadEl.files[0];
 
     if(!name) return showMessageBox('กรุณากรอกชื่อ','red');
     if(!/^\d{10}$/.test(phone)) return showMessageBox('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก','red');
-    if(!note) return showMessageBox('กรุณากรอกหมายเหตุ','red');
+    if(!locationKey) return showMessageBox('กรุณาเลือกสถานที่จัดส่ง','red');
     if(selectedDates.length === 0) return showMessageBox('กรุณาเลือกวันจัดส่ง','red');
     if(!slipFile) return showMessageBox('กรุณาอัปโหลดสลิป','red');
 
@@ -700,7 +782,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const finalOrder = {
       queueNumber: getOrderQueueNumber(), customerName: name,
-      customerContact: { phone }, customerNote: note,
+      customerContact: { phone },
+      customerNote: note,
+      deliveryLocationKey: locationKey,
+      deliveryLocationLabel: deliveryConfig[locationKey]?.label || '',
       deliveryDates: selectedDates, orderDate: new Date().toISOString(),
       items: Object.values(order.items).filter(i=>i.quantity>0),
       subtotal: order.subtotal,
@@ -753,15 +838,17 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryWarningEl.classList.toggle('hidden', selectedCount <= 1);
   });
 
+  // เมื่อเลือกสถานที่จัดส่ง ให้ render วันจัดส่งของพื้นที่นั้น
+  deliveryLocationEl.addEventListener('change', () => {
+    const key = deliveryLocationEl.value;
+    renderDeliveryDates(key);
+  });
+
   renderMenu();
   updateTotal();
+  // แรกเข้าให้ขึ้นข้อความ “กรุณาเลือกสถานที่จัดส่งก่อน”
   renderDeliveryDates();
 });
 </script>
 </body>
 </html>
-
-
-
-
-
