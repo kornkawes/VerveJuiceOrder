@@ -1018,13 +1018,12 @@ order.total = Math.max(0, subtotal - discountValue);
       let summaryHTML = `<div class="mt-2 pt-2 border-t text-sm text-right">`;
       summaryHTML += `<p>ยอดรวม: ฿${data.subtotal.toFixed(2)}</p>`;
       if (data.discount) {
-        let discountAmount = data.discount.type === 'fixed'
-        summaryHTML += `<p class="text-red-500">ส่วนลด (${data.discount.code}): -฿${discountAmount.toFixed(2)}</p>`;
-    ? data.discount.value
-      }
-    : (data.subtotal * data.discount.value) / 100;
+  let discountAmount =
+    data.discount.type === 'fixed'
+      ? data.discount.value
+      : (data.subtotal * data.discount.value) / 100;
 
-  // ✅ คุมเพดานส่วนลด
+  // ✅ คุมเพดานส่วนลด (maxDiscount)
   if (typeof data.discount.maxDiscount === 'number') {
     discountAmount = Math.min(discountAmount, data.discount.maxDiscount);
   }
@@ -1179,6 +1178,7 @@ order.total = Math.max(0, subtotal - discountValue);
 </script>
 </body>
 </html>
+
 
 
 
